@@ -21,6 +21,7 @@ class ConstructionSite(object):
         self.height = height
         # initializes an 2d array
         self.area = numpy.zeros((height, width), dtype='int32')
+
     def buildVrijstand(self, x_start, x_end, y_start, y_end, std_vrijstand):
         """
         Add free space on the given location
