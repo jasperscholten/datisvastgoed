@@ -49,11 +49,29 @@ class ConstructionSite(object):
                     return False
         return True
 
+    def createVariables(self, mais, bung, egws):
+        maison = dict()
+        bungalow = dict()
+        singlefam = dict()
+
+        for i in range(mais):
+            maison["maison{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+
+        for i in range(bung):
+            bungalow["bungalow{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+
+        for i in range(egws):
+            singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+
+        return maison, bungalow, singlefam
+
 def RunSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
     area = ConstructionSite(width, height)
+    houses = area.createVariables(mais, bung, egws)
+    print houses
 
     # build right amount of maisons
     counter = 0
@@ -84,10 +102,6 @@ def RunSimulation(mais, bung, egws, width, height):
             area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
             counter += 1
-
-
-
-
 
     plt.imshow(area.area)
     #plt.gray()
