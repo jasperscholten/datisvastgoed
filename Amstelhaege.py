@@ -101,6 +101,6 @@ def RunSimulation(mais, bung, egws, width, height):
     #plt.gray()
     plt.show()
 
-
+# test
 
 RunSimulation(6, 10, 18 , 300, 320)
