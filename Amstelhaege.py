@@ -2,7 +2,6 @@ import numpy
 import random
 import matplotlib.pyplot as plt
 
-
 class ConstructionSite(object):
     """
     The Construction is a rectangular form where the houses are build.
@@ -72,7 +71,6 @@ def RunSimulation(mais, bung, egws, width, height):
     """
     area = ConstructionSite(width, height)
     houses = area.createVariables(mais, bung, egws)
-    print houses
 
     # build right amount of maisons
     counter = 0
@@ -82,6 +80,8 @@ def RunSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21) == True:
             area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
             area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
+            houses[0]["maison{0}".format(counter)][2] = x_pos
+            houses[0]["maison{0}".format(counter)][3] = y_pos
             counter += 1
 
     # build right amount of bungalows
@@ -92,6 +92,8 @@ def RunSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 20, y_pos, y_pos + 15) == True:
             area.buildVrijstand(x_pos, x_pos + 20, y_pos, y_pos + 15, 6)
             area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
+            houses[1]["bungalow{0}".format(counter)][2] = x_pos
+            houses[1]["bungalow{0}".format(counter)][3] = y_pos
             counter += 1
 
     # build right amount of egws
@@ -102,7 +104,11 @@ def RunSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16) == True:
             area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
+            houses[2]["singlefamily{0}".format(counter)][2] = x_pos
+            houses[2]["singlefamily{0}".format(counter)][3] = y_pos
             counter += 1
+
+    print houses
 
     plt.imshow(area.area)
     #plt.gray()
