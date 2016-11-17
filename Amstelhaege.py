@@ -65,7 +65,18 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-def RunSimulation(mais, bung, egws, width, height):
+    def calculateValue(self, vrijstand, type, houseID):
+        if type == 1:
+            value = 285000 + vrijstand * 0.03 * 285000
+            houses[2]["singlefamily{0}".format(houseID)][0] = value
+        elif type == 2:
+            value = 399000 + vrijstand * 0.04 * 399000
+            houses[1]["bungalow{0}".format(houseID)][0] = value
+        elif type == 3:
+            value = 610000 + vrijstand * 0.06 * 610000
+            houses[0]["maison{0}".format(houseID)][0] = value
+
+def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
@@ -96,7 +107,7 @@ def RunSimulation(mais, bung, egws, width, height):
             houses[1]["bungalow{0}".format(counter)][3] = y_pos
             counter += 1
 
-    # build right amount of egws
+    # build right amount of single family homes
     counter = 0
     while counter < egws:
         x_pos = random.randint(0 + 4, width - 16 - 4)
@@ -114,4 +125,4 @@ def RunSimulation(mais, bung, egws, width, height):
     #plt.gray()
     plt.show()
 
-RunSimulation(6, 10, 18 , 300, 320)
+initializeSimulation(6, 10, 18 , 300, 320)
