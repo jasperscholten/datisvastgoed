@@ -1,7 +1,7 @@
 # Readme van Amstelhaege case bij heuristieken
 ## Groep Datis Vastgoed
-Nadav Baruch - 
-Jelle Mul - 11402148
+Nadav Baruch - </br>
+Jelle Mul - 11402148</br>
 Jasper Scholten - 11157887
 
 ## Logboek
