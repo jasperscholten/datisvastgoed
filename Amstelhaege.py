@@ -65,15 +65,19 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-    def calculateValue(self, vrijstand, type, houseID):
+    def calculateValue(self, type, houseID):
+        '''
+        waarde = beginwaarde + vrijstand * procentuele waardevermeerdering per
+                    meter * beginwaarde
+        '''
         if type == 1:
-            value = 285000 + vrijstand * 0.03 * 285000
+            value = 285000 + houses[2]["singlefamily{0}".format(houseID)][1] * 0.03 * 285000
             houses[2]["singlefamily{0}".format(houseID)][0] = value
         elif type == 2:
-            value = 399000 + vrijstand * 0.04 * 399000
+            value = 399000 + houses[1]["bungalow{0}".format(houseID)][1] * 0.04 * 399000
             houses[1]["bungalow{0}".format(houseID)][0] = value
         elif type == 3:
-            value = 610000 + vrijstand * 0.06 * 610000
+            value = 610000 + houses[0]["maison{0}".format(houseID)][1] * 0.06 * 610000
             houses[0]["maison{0}".format(houseID)][0] = value
 
 def initializeSimulation(mais, bung, egws, width, height):
@@ -93,6 +97,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
             houses[0]["maison{0}".format(counter)][2] = x_pos
             houses[0]["maison{0}".format(counter)][3] = y_pos
+            # calculateValue(3, counter)
             counter += 1
 
     # build right amount of bungalows
@@ -105,6 +110,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
             houses[1]["bungalow{0}".format(counter)][2] = x_pos
             houses[1]["bungalow{0}".format(counter)][3] = y_pos
+            # calculateValue(2, counter)
             counter += 1
 
     # build right amount of single family homes
@@ -117,6 +123,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
             houses[2]["singlefamily{0}".format(counter)][2] = x_pos
             houses[2]["singlefamily{0}".format(counter)][3] = y_pos
+            # calculateValue(1, counter)
             counter += 1
 
     print houses
