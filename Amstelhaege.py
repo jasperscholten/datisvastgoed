@@ -65,40 +65,40 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-    def calculateVrijstand(self, x_pos, y_pos):
+    def calculateVrijstand(self, x_pos, y_pos, width, height):
         # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
         x_search = x_pos - 14
         y_search = y_pos - 14
         counter = 0
         while True:
             for j in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                if self.area[(j, y_search - 2 * counter)] != 0 and self.area[(j, y_search - 2 * counter)] != 4:
+                if (self.area[(j, y_search - 2 * counter)] != 0 and self.area[(j, y_search - 2 * counter)] != 4) or (j > width or j < 0):
                     return counter
             for k in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                if self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 0 and self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 4:
+                if self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 0 and self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 4 or (k > height or k < 0):
                     return counter
             for l in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                if self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 0 and self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 4:
+                if self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 0 and self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 4 or (l > width or l < 0):
                     return counter
-            for m in range((y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                if self.area[(x_search - 2 * counter, m)] != 0 and self.area[(x_search - 2 * counter, m)] != 4:
+            for m in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
+                if self.area[(x_search - 2 * counter, m)] != 0 and self.area[(x_search - 2 * counter, m)] != 4 or (k > height or k < 0):
                     return counter
             counter += 1
 
-    def calculateValue(self, type, houseID):
+    def calculateValue(self, type, vrijstand):
         '''
         waarde = beginwaarde + vrijstand * procentuele waardevermeerdering per
                     meter * beginwaarde
         '''
         if type == 1:
-            value = 285000 + houses[2]["singlefamily{0}".format(houseID)][1] * 0.03 * 285000
-            houses[2]["singlefamily{0}".format(houseID)][0] = value
+            value = 285000 + vrijstand * 0.03 * 285000
+            return value
         elif type == 2:
-            value = 399000 + houses[1]["bungalow{0}".format(houseID)][1] * 0.04 * 399000
-            houses[1]["bungalow{0}".format(houseID)][0] = value
+            value = 399000 + vrijstand * 0.04 * 399000
+            return value
         elif type == 3:
-            value = 610000 + houses[0]["maison{0}".format(houseID)][1] * 0.06 * 610000
-            houses[0]["maison{0}".format(houseID)][0] = value
+            value = 610000 + vrijstand * 0.06 * 610000
+            return value
 
 
 def initializeSimulation(mais, bung, egws, width, height):
@@ -145,9 +145,18 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[2]["singlefamily{0}".format(counter)][3] = y_pos
             counter += 1
 
+    for i in range(mais):
+        x_pos = houses[0]["maison{0}".format(i)][2]
+        y_pos = houses[0]["maison{0}".format(i)][3]
+        houses[0]["maison{0}".format(i)][1] = area.calculateVrijstand(x_pos, y_pos, width, height)
+        value = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
+        houses[0]["maison{0}".format(i)][0] = value
+
+
+
     print houses
 
-    area.calculateVrijstand(mais, bung, egws)
+
     plt.imshow(area.area)
     #plt.gray()
     plt.show()
