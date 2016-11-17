@@ -23,7 +23,7 @@ class ConstructionSite(object):
         self.area = numpy.zeros((height, width), dtype='int32')
     def buildVrijstand(self, x_start, x_end, y_start, y_end, std_vrijstand):
         """
-        Build the eensgezinswoning on the given location
+        Add free space on the given location
         """
         # change values in range
         for x in range(x_start - std_vrijstand, x_end + std_vrijstand):
@@ -32,7 +32,7 @@ class ConstructionSite(object):
 
     def buildWoning(self, x_start, x_end, y_start, y_end, type):
         """
-        Build the eensgezinswoning on the given location
+        Build a house on the given location
         """
         # change values in range
         for x in range(x_start, x_end):
