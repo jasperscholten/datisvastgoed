@@ -85,9 +85,23 @@ class ConstructionSite(object):
                     return counter
             counter += 1
 
+    def calculateValue(self, type, houseID):
+        '''
+        waarde = beginwaarde + vrijstand * procentuele waardevermeerdering per
+                    meter * beginwaarde
+        '''
+        if type == 1:
+            value = 285000 + houses[2]["singlefamily{0}".format(houseID)][1] * 0.03 * 285000
+            houses[2]["singlefamily{0}".format(houseID)][0] = value
+        elif type == 2:
+            value = 399000 + houses[1]["bungalow{0}".format(houseID)][1] * 0.04 * 399000
+            houses[1]["bungalow{0}".format(houseID)][0] = value
+        elif type == 3:
+            value = 610000 + houses[0]["maison{0}".format(houseID)][1] * 0.06 * 610000
+            houses[0]["maison{0}".format(houseID)][0] = value
 
 
-def RunSimulation(mais, bung, egws, width, height):
+def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
@@ -105,7 +119,7 @@ def RunSimulation(mais, bung, egws, width, height):
             houses[0]["maison{0}".format(counter)][2] = x_pos
             houses[0]["maison{0}".format(counter)][3] = y_pos
             counter += 1
-            
+
 
     # build right amount of bungalows
     counter = 0
@@ -138,4 +152,4 @@ def RunSimulation(mais, bung, egws, width, height):
     #plt.gray()
     plt.show()
 
-RunSimulation(6, 10, 18 , 300, 320)
+initializeSimulation(6, 10, 18 , 300, 320)
