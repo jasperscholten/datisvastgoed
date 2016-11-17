@@ -4,13 +4,13 @@ def createVariables(mais, bung, egws):
     singlefam = dict()
 
     for i in range(mais):
-        maison["maison{0}".format(i)] = [0,0]
+        maison["maison{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
 
     for i in range(bung):
-        bungalow["bungalow{0}".format(i)] = [0,0]
+        bungalow["bungalow{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
 
     for i in range(egws):
-        singlefam["singlefamily{0}".format(i)] = [0,0]
+        singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
 
     return maison, bungalow, singlefam
 
