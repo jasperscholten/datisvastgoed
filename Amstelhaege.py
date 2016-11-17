@@ -145,6 +145,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[2]["singlefamily{0}".format(counter)][3] = y_pos
             counter += 1
 
+    # calculateVrijstand and calculateValue for maison
     for i in range(mais):
         x_pos = houses[0]["maison{0}".format(i)][2]
         y_pos = houses[0]["maison{0}".format(i)][3]
