@@ -65,28 +65,25 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-    def calculateVrijstand(self, mais, bung, egws):
-        for i in range(mais):
-            x_pos = houses[0]["maison{0}".format(i)][2]
-            y_pos = houses[0]["maison{0}".format(i)][3]
-            # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
-            x_search = x_pos - 14
-            y_search = y_pos - 14
-            counter = 0
-            while True:
-                for j in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                    if self.area[(j, y_search - 2 * counter)] != 0 and self.area[(j, y_search - 2 * counter)] != 4:
-                        return counter
-                for k in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                    if self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 0 and self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 4:
-                        return counter
-                for l in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                    if self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 0 and self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 4:
-                        return counter
-                for m in range((y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                    if self.area[(x_search - 2 * counter, m)] != 0 and self.area[(x_search - 2 * counter, m)] != 4:
-                        return counter
-                counter += 1
+    def calculateVrijstand(self, x_pos, y_pos):
+        # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
+        x_search = x_pos - 14
+        y_search = y_pos - 14
+        counter = 0
+        while True:
+            for j in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
+                if self.area[(j, y_search - 2 * counter)] != 0 and self.area[(j, y_search - 2 * counter)] != 4:
+                    return counter
+            for k in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
+                if self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 0 and self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 4:
+                    return counter
+            for l in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
+                if self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 0 and self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 4:
+                    return counter
+            for m in range((y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
+                if self.area[(x_search - 2 * counter, m)] != 0 and self.area[(x_search - 2 * counter, m)] != 4:
+                    return counter
+            counter += 1
 
 
 
@@ -108,6 +105,7 @@ def RunSimulation(mais, bung, egws, width, height):
             houses[0]["maison{0}".format(counter)][2] = x_pos
             houses[0]["maison{0}".format(counter)][3] = y_pos
             counter += 1
+            
 
     # build right amount of bungalows
     counter = 0
