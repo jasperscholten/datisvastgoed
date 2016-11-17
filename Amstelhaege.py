@@ -49,51 +49,43 @@ class ConstructionSite(object):
                     return False
         return True
 
-
-class Eensgezinswoning(object):
-    """
-    A house with with 8m x 8m --> 16 x 16 tiles.
-    """
-    def __init__(self):
-        self.egw_width = 16
-        self.egw_length = 16
-
 def RunSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
     area = ConstructionSite(width, height)
 
-
-    # build right amount of egws
+    # build right amount of maisons
     counter = 0
-    while counter < egws:
-        x_pos = random.randint(0 + 4, width - 16 - 8)
-        y_pos = random.randint(0 + 4, height - 16 -8)
-        if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16, 4) == True:
-            area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
-            area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
+    while counter < mais:
+        x_pos = random.randint(0 + 12, width - 22 - 12)
+        y_pos = random.randint(0 + 12, height - 21 - 12)
+        if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21, 12) == True:
+            area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
+            area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
             counter += 1
 
     # build right amount of bungalows
     counter = 0
     while counter < bung:
-        x_pos = random.randint(0 + 6, width - 20 - 12)
-        y_pos = random.randint(0 + 6, height - 15 - 12)
+        x_pos = random.randint(0 + 6, width - 20 - 6)
+        y_pos = random.randint(0 + 6, height - 15 - 6)
         if area.checkIfPossible(x_pos, x_pos + 20, y_pos, y_pos + 15, 6) == True:
             area.buildVrijstand(x_pos, x_pos + 20, y_pos, y_pos + 15, 6)
             area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
             counter += 1
 
-    # build right amount of maisons
+    # build right amount of egws
     counter = 0
-    while counter < mais:
-        x_pos = random.randint(0 + 12, width - 22 - 24)
-        y_pos = random.randint(0 + 12, height - 21 - 24)
-        if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21, 12) == True:
-            area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
-            area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
+    while counter < egws:
+        x_pos = random.randint(0 + 4, width - 16 - 4)
+        y_pos = random.randint(0 + 4, height - 16 -4)
+        if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16, 4) == True:
+            area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
+            area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
             counter += 1
+
+
 
 
 
