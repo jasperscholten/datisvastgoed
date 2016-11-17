@@ -1,5 +1,8 @@
 # Readme van Amstelhaege case bij heuristieken
 ## Groep Datis Vastgoed
+Nadav Baruch - 
+Jelle Mul - 11402148
+Jasper Scholten - 11157887
 
 ## Logboek
 **Week 1** - Voor ons eigen begrip een overzicht gemaakt van de case. Eerste regels code geschreven, waardoor een numpy array van de juiste grootte (maten van het veld) aangemaakt wordt; dit is de basis structuur waarop de huizen geplaatst kunnen worden. Daarnaast ook een manier van visualisatie gevonden en uitgetest (matplotlib.pyplot). Tevens contact gelegd met Wouter, onze code-interviseur.
