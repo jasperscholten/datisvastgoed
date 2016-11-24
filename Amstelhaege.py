@@ -2,6 +2,13 @@ import numpy
 import random
 import matplotlib.pyplot as plt
 
+# 0 = lege ruimte
+# 1 = eengezinswoning
+# 2 = bungalow
+# 3 = maison
+# 4 = nu nog standaard vrijstand
+# 5 = water
+
 class ConstructionSite(object):
     """
     The Construction is a rectangular form where the houses are build.
@@ -67,6 +74,24 @@ class ConstructionSite(object):
 
     def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd):
         # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
+
+        for each house:
+            for each coordinate:
+                #valt x coordinaat binnen huis - muur tot muur.
+                if x_lu <= x_coordinate <= x_ru:
+                    if y_lu <= y_coordinate:
+                        distance = abs(y_lu - y_coordinate)
+                    else:
+                        distance = abs(y_coordinate - y_ld)
+                #valt y coordinaat binnen huis - muur tot muur.
+                elif y_lu <= y_coordinate <= y_ld:
+                    if x_lu <= x_coordinate:
+                        distance = abs(x_lu - x_coordinate)
+                    else:
+                        distance = abs(x_coordinate - x_ru)
+                #hoekgevallen
+                else:
+
 
         return 0
 
