@@ -65,25 +65,11 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-    def calculateVrijstand(self, x_pos, y_pos, width, height):
+    def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd):
         # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
-        x_search = x_pos - 14
-        y_search = y_pos - 14
-        counter = 0
-        while True:
-            for j in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                if (self.area[(j, y_search - 2 * counter)] != 0 and self.area[(j, y_search - 2 * counter)] != 4) or (j > width or j < 0):
-                    return counter
-            for k in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                if self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 0 and self.area[(x_search + 2 * 12 + 22 + 2 + 2 * counter, k)] != 4 or (k > height or k < 0):
-                    return counter
-            for l in range(x_search - 2 * counter, x_search + 2 * 12 + 22 + 2 + 2 * counter):
-                if self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 0 and self.area[(l, y_search + 2 * 12 + 21 + 2 + 2 * counter)] != 4 or (l > width or l < 0):
-                    return counter
-            for m in range(y_search - 2 * counter, y_search + 2 * 12 + 21 + 2 + 2 * counter):
-                if self.area[(x_search - 2 * counter, m)] != 0 and self.area[(x_search - 2 * counter, m)] != 4 or (k > height or k < 0):
-                    return counter
-            counter += 1
+
+        return 0
+
 
     def calculateValue(self, type, vrijstand):
         '''
