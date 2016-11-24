@@ -55,13 +55,13 @@ class ConstructionSite(object):
         singlefam = dict()
 
         for i in range(mais):
-            maison["maison{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+            maison["maison{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
         for i in range(bung):
-            bungalow["bungalow{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+            bungalow["bungalow{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
         for i in range(egws):
-            singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_start', 'y_start']
+            singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
         return maison, bungalow, singlefam
 
@@ -118,6 +118,12 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
             houses[0]["maison{0}".format(counter)][2] = x_pos
             houses[0]["maison{0}".format(counter)][3] = y_pos
+            houses[0]["maison{0}".format(counter)][4] = x_pos + 22
+            houses[0]["maison{0}".format(counter)][5] = y_pos
+            houses[0]["maison{0}".format(counter)][6] = x_pos
+            houses[0]["maison{0}".format(counter)][7] = y_pos + 21
+            houses[0]["maison{0}".format(counter)][8] = x_pos + 22
+            houses[0]["maison{0}".format(counter)][9] = y_pos + 21
             counter += 1
 
 
@@ -131,6 +137,12 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
             houses[1]["bungalow{0}".format(counter)][2] = x_pos
             houses[1]["bungalow{0}".format(counter)][3] = y_pos
+            houses[1]["bungalow{0}".format(counter)][4] = x_pos + 20
+            houses[1]["bungalow{0}".format(counter)][5] = y_pos
+            houses[1]["bungalow{0}".format(counter)][6] = x_pos
+            houses[1]["bungalow{0}".format(counter)][7] = y_pos + 15
+            houses[1]["bungalow{0}".format(counter)][8] = x_pos + 20
+            houses[1]["bungalow{0}".format(counter)][9] = y_pos + 15
             counter += 1
 
     # build right amount of egws
@@ -143,6 +155,12 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
             houses[2]["singlefamily{0}".format(counter)][2] = x_pos
             houses[2]["singlefamily{0}".format(counter)][3] = y_pos
+            houses[2]["singlefamily{0}".format(counter)][4] = x_pos + 16
+            houses[2]["singlefamily{0}".format(counter)][5] = y_pos
+            houses[2]["singlefamily{0}".format(counter)][6] = x_pos
+            houses[2]["singlefamily{0}".format(counter)][7] = y_pos + 16
+            houses[2]["singlefamily{0}".format(counter)][8] = x_pos + 16
+            houses[2]["singlefamily{0}".format(counter)][9] = y_pos + 16
             counter += 1
 
     # calculateVrijstand and calculateValue for maison
