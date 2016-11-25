@@ -73,22 +73,29 @@ class ConstructionSite(object):
         return maison, bungalow, singlefam
 
     def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd):
-        # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
 
+        # Wat we nu doen is (zo goed als) continu, met komma getallen.
+        # Kan je in principe hogere, nauwkeurigere waarde mee vinden.
+        # discreet is met gehele getallen -> Wouter
+        # hoe meer discretiseren, hoe minder accuraat: keuze op dit gebied is
+        # interresant voor verslag.
+
+        # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
         for each house:
             for each coordinate:
-                #valt x coordinaat binnen huis - muur tot muur.
+                # valt x coordinaat binnen huis - muur tot muur.
                 if x_lu <= x_coordinate <= x_ru:
+                    # kan in een functie (voor later)
                     if y_lu <= y_coordinate:
-                        distance = abs(y_lu - y_coordinate)
+                        distance = y_lu - y_coordinate
                     else:
-                        distance = abs(y_coordinate - y_ld)
-                #valt y coordinaat binnen huis - muur tot muur.
+                        distance = y_coordinate - y_ld
+                # valt y coordinaat binnen huis - muur tot muur.
                 elif y_lu <= y_coordinate <= y_ld:
                     if x_lu <= x_coordinate:
-                        distance = abs(x_lu - x_coordinate)
+                        distance = x_lu - x_coordinate
                     else:
-                        distance = abs(x_coordinate - x_ru)
+                        distance = x_coordinate - x_ru
                 #hoekgevallen
                 else:
 
