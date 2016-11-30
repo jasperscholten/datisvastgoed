@@ -1,5 +1,6 @@
 import numpy
 import random
+import math
 import matplotlib.pyplot as plt
 
 # 0 = lege ruimte
@@ -72,7 +73,7 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam
 
-    def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd):
+    def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses):
 
         # Wat we nu doen is (zo goed als) continu, met komma getallen.
         # Kan je in principe hogere, nauwkeurigere waarde mee vinden.
@@ -80,27 +81,93 @@ class ConstructionSite(object):
         # hoe meer discretiseren, hoe minder accuraat: keuze op dit gebied is
         # interresant voor verslag.
 
-        # start search is the corner of the house minus the standard "vrijstand" minus 1 meter
-        for each house:
-            for each coordinate:
-                # valt x coordinaat binnen huis - muur tot muur.
-                if x_lu <= x_coordinate <= x_ru:
-                    # kan in een functie (voor later)
-                    if y_lu <= y_coordinate:
-                        distance = y_lu - y_coordinate
-                    else:
-                        distance = y_coordinate - y_ld
-                # valt y coordinaat binnen huis - muur tot muur.
-                elif y_lu <= y_coordinate <= y_ld:
-                    if x_lu <= x_coordinate:
-                        distance = x_lu - x_coordinate
-                    else:
-                        distance = x_coordinate - x_ru
-                #hoekgevallen
-                else:
+        distance = 1000000.0
+        x_coordinate = 0.0
+        y_coordinate = 0.0
 
+        # loop through housetypes
+        for i in range(0,2):
+            # loop through houses of certain type
+            for j in range houses[i]:
+                # loop through corner coordinates
+                for k in range(0,3):
+                    if k == 0:
+                        if i == 0:
+                            x_coordinate = houses[i]["maison{0}".format(j)][3]
+                            y_coordinate = houses[i]["maison{0}".format(j)][4]
+                        elif i == 1:
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][3]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][4]
+                        else:
+                            x_coordinate = houses[i]["singlefam{0}".format(j)][3]
+                            y_coordinate = houses[i]["singlefam{0}".format(j)][4]
+                    if k == 1:
+                        if i == 0:
+                            x_coordinate = houses[i]["maison{0}".format(j)][5]
+                            y_coordinate = houses[i]["maison{0}".format(j)][6]
+                        elif i == 1:
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][5]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][6]
+                        else:
+                            x_coordinate = houses[i]["singlefam{0}".format(j)][5]
+                            y_coordinate = houses[i]["singlefam{0}".format(j)][6]
+                    if k == 2:
+                        if i == 0:
+                            x_coordinate = houses[i]["maison{0}".format(j)][7]
+                            y_coordinate = houses[i]["maison{0}".format(j)][8]
+                        elif i == 1:
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][7]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][8]
+                        else:
+                            x_coordinate = houses[i]["singlefam{0}".format(j)][7]
+                            y_coordinate = houses[i]["singlefam{0}".format(j)][8]
+                    if k == 3:
+                        if i == 0:
+                            x_coordinate = houses[i]["maison{0}".format(j)][9]
+                            y_coordinate = houses[i]["maison{0}".format(j)][10]
 
-        return 0
+                        elif i == 1:
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][9]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][10]
+                        else:
+                            x_coordinate = houses[i]["singlefam{0}".format(j)][9]
+                            y_coordinate = houses[i]["singlefam{0}".format(j)][10]
+
+                    coordistance = 0.0
+
+                    # valt x coordinaat binnen huis -> muur tot muur.
+                    if x_lu <= x_coordinate <= x_ru:
+                        # kan in een functie (voor later)
+                        if y_lu <= y_coordinate:
+                            coordistance = y_lu - y_coordinate
+                        else:
+                            coordistance = y_coordinate - y_ld
+                    # valt y coordinaat binnen huis -> muur tot muur.
+                    elif y_lu <= y_coordinate <= y_ld:
+                        if x_lu <= x_coordinate:
+                            coordistance = x_lu - x_coordinate
+                        else:
+                            coordistance = x_coordinate - x_ru
+                    #hoekgevallen
+                    else:
+                        # if, elif, else gebruiken?
+                        if x_coordinate < x_lu and y_coordinate < y_lu:
+                            # leftup
+                            coordistance = math.sqrt((y_lu - y_coordinate) ** 2 + (x_lu - x_coordinate) ** 2)
+                        if x_coordinate > x_ru and y_coordinate < y_ru:
+                            # rightup
+                            coordistance = math.sqrt((y_ru - y_coordinate) ** 2 + (x_coordinate - x_ru) ** 2)
+                        if x_coordinate < x_ld and y_coordinate > y_ld:
+                            # leftdown
+                            coordistance = math.sqrt((y_coordinate - y_ld) ** 2 + (x_ld - x_coordinate) ** 2)
+                        if x_coordinate > x_rd and y_coordinate > y_rd:
+                            # rightdown
+                            coordistance = math.sqrt((y_coordinate - y_rd) ** 2 + (x_coordinate - x_rd) ** 2)
+
+                    if coordistance < distance:
+                        distance = coordistance
+
+        return distance
 
 
     def calculateValue(self, type, vrijstand):
