@@ -59,13 +59,13 @@ class ConstructionSite(object):
                     return False
         return True
 
-    def createVariables(self, water, mais, bung, egws):
+    def createVariables(self, waterPieces, mais, bung, egws):
         water = dict()
         maison = dict()
         bungalow = dict()
         singlefam = dict()
 
-        for i in range(water):
+        for i in range(waterPieces):
             water["water{0}".format(i)] = ['x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
         for i in range(mais):
@@ -77,7 +77,7 @@ class ConstructionSite(object):
         for i in range(egws):
             singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
-        return water, maison, bungalow, singlefam
+        return maison, bungalow, singlefam, water
 
     def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses):
 
@@ -94,7 +94,7 @@ class ConstructionSite(object):
         # loop through housetypes
         for i in range(0,2):
             # loop through houses of certain type
-            for j in range houses[i]:
+            for j in range(len(houses[i])):
                 # loop through corner coordinates
                 for k in range(0,3):
                     if k == 0:
@@ -191,39 +191,45 @@ class ConstructionSite(object):
             return value
 
 
+
 def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
+    print "Entered initializeSimulation"
     area = ConstructionSite(width, height)
     waterPieces = random.randint(1,4)
     waterRatio = random.randint(1,4)
-    amountWater = 0.2 * area
+    amountWater = 19200
     houses = area.createVariables(waterPieces, mais, bung, egws)
 
     # build right amount of water pieces
     counter = 0
+    waterLength = 0
+    waterWidth = 0
     while counter < waterPieces:
-        x_pos = random.randint(0, width)
-        y_pos = random.randint(0, height)
-        def decomposition(i):
-        while i > 0:
-            areaWaterPiece = random.randint(1, i)
-            yield areaWaterPiece
-            print (areaWaterPiece)
-            i -= areaWaterPiece
-            waterLength = math.sqrt(waterRatio * areaWaterPiece)
-            waterWidth = waterLength / waterRatio
-        if area.checkIfPossible(x_pos, waterLength, y_pos, waterWidth) == True:
-            area.buildWater(x_pos, waterLength, y_pos, waterWidth, 5)
-            houses[3]["water{0}".format(counter)][2] = x_pos
+        print "Entered while counter < waterPieces"
+
+        areaWaterPiece = random.randint(1, amountWater)
+        print (areaWaterPiece)
+        amountWater -= areaWaterPiece
+        waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
+        waterWidth = int(round(waterLength / waterRatio))
+        x_pos = random.randint(0, width - waterLength)
+        y_pos = random.randint(0, height - waterWidth)
+
+        if area.checkIfPossible(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth) == True:
+            area.buildWater(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
+            print(houses)
+            print(houses[3])
+            houses[3]["water{0}".format(counter)][0] = x_pos
+            houses[3]["water{0}".format(counter)][1] = y_pos
+            houses[3]["water{0}".format(counter)][2] = x_pos + waterLength
             houses[3]["water{0}".format(counter)][3] = y_pos
-            houses[3]["water{0}".format(counter)][4] = x_pos + waterLength
-            houses[3]["water{0}".format(counter)][5] = y_pos
-            houses[3]["water{0}".format(counter)][6] = x_pos
+            houses[3]["water{0}".format(counter)][4] = x_pos
+            houses[3]["water{0}".format(counter)][5] = y_pos + waterWidth
+            houses[3]["water{0}".format(counter)][6] = x_pos + waterLength
             houses[3]["water{0}".format(counter)][7] = y_pos + waterWidth
-            houses[3]["water{0}".format(counter)][8] = x_pos + waterLength
-            houses[3]["water{0}".format(counter)][9] = y_pos + waterWidth
             counter += 1
 
     # build right amount of maisons
@@ -325,9 +331,9 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     print houses
 
-
     plt.imshow(area.area)
     #plt.gray()
     plt.show()
 
+print "hoi"
 initializeSimulation(6, 10, 18 , 300, 320)
