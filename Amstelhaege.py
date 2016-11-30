@@ -211,6 +211,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             areaWaterPiece = amountWater
         else:
             areaWaterPiece = random.randint(1, amountWater)
+
         print ("size:", areaWaterPiece)
         amountWater -= areaWaterPiece
         waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
