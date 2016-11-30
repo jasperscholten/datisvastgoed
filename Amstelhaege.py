@@ -209,7 +209,6 @@ def initializeSimulation(mais, bung, egws, width, height):
         else:
             areaWaterPiece = random.randint(1, amountWater)
 
-        print ("size:", areaWaterPiece)
         amountWater -= areaWaterPiece
         waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
         waterWidth = int(round(waterLength / waterRatio))
@@ -227,6 +226,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[3]["water{0}".format(counter - 1)][6] = x_pos + waterLength
             houses[3]["water{0}".format(counter - 1)][7] = y_pos + waterWidth
             counter += 1
+            print ("size:", areaWaterPiece)
 
     # build right amount of maisons
     counter = 0
@@ -333,3 +333,4 @@ def initializeSimulation(mais, bung, egws, width, height):
 initializeSimulation(9, 15, 36, 300, 320)
 initializeSimulation(6, 10, 24, 300, 320)
 initializeSimulation(3, 5, 12, 300, 320)
+initializeSimulation(2, 1, 1, 300, 320)
