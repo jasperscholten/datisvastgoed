@@ -291,7 +291,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_ld = houses[0]["maison{0}".format(i)][7]
         x_rd = houses[0]["maison{0}".format(i)][8]
         y_rd = houses[0]["maison{0}".format(i)][9]
-        houses[0]["maison{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd)
+        houses[0]["maison{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
         value = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
         houses[0]["maison{0}".format(i)][0] = value
 
@@ -305,7 +305,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_ld = houses[1]["bungalow{0}".format(i)][7]
         x_rd = houses[1]["bungalow{0}".format(i)][8]
         y_rd = houses[1]["bungalow{0}".format(i)][9]
-        houses[1]["bungalow{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd)
+        houses[1]["bungalow{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
         value = area.calculateValue(2, houses[1]["bungalow{0}".format(i)][1])
         houses[1]["bungalow{0}".format(i)][1] = value
 
@@ -318,7 +318,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_ld = houses[2]["singlefamily{0}".format(i)][7]
         x_rd = houses[2]["singlefamily{0}".format(i)][8]
         y_rd = houses[2]["singlefamily{0}".format(i)][9]
-        houses[2]["singlefamily{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd)
+        houses[2]["singlefamily{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
         value = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
         houses[2]["singlefamily{0}".format(i)][0] = value
 
