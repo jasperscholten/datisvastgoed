@@ -196,7 +196,6 @@ def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
     """
-    print "Entered initializeSimulation"
     area = ConstructionSite(width, height)
     waterPieces = random.randint(1,4)
     waterRatio = random.randint(1,4)
@@ -222,8 +221,6 @@ def initializeSimulation(mais, bung, egws, width, height):
 
         if area.checkIfPossible(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth) == True:
             area.buildWater(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
-            print(houses)
-            print(houses[3])
             houses[3]["water{0}".format(counter - 1)][0] = x_pos
             houses[3]["water{0}".format(counter - 1)][1] = y_pos
             houses[3]["water{0}".format(counter - 1)][2] = x_pos + waterLength
@@ -302,7 +299,6 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[0]["maison{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
         value = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
         houses[0]["maison{0}".format(i)][0] = value
-
 
     for i in range(bung):
         x_lu = houses[1]["bungalow{0}".format(i)][2]
