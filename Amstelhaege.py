@@ -335,5 +335,6 @@ def initializeSimulation(mais, bung, egws, width, height):
     #plt.gray()
     plt.show()
 
-print "hoi"
-initializeSimulation(6, 10, 18 , 300, 320)
+initializeSimulation(9, 15, 36, 300, 320)
+initializeSimulation(6, 10, 24, 300, 320)
+initializeSimulation(3, 5, 12, 300, 320)
