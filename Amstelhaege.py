@@ -173,7 +173,7 @@ class ConstructionSite(object):
                     if coordistance < distance:
                         distance = coordistance
 
-        return distance
+        return round(distance, 2)
 
     def calculateValue(self, type, vrijstand):
         '''
@@ -182,15 +182,12 @@ class ConstructionSite(object):
         '''
         if type == 1:
             value = 285000 + vrijstand * 0.03 * 285000
-            return value
         elif type == 2:
             value = 399000 + vrijstand * 0.04 * 399000
-            return value
         elif type == 3:
             value = 610000 + vrijstand * 0.06 * 610000
-            return value
 
-
+        return round(value, 2)
 
 def initializeSimulation(mais, bung, egws, width, height):
     """
@@ -311,7 +308,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_rd = houses[1]["bungalow{0}".format(i)][9]
         houses[1]["bungalow{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
         value = area.calculateValue(2, houses[1]["bungalow{0}".format(i)][1])
-        houses[1]["bungalow{0}".format(i)][1] = value
+        houses[1]["bungalow{0}".format(i)][0] = value
 
     for i in range(egws):
         x_lu = houses[2]["singlefamily{0}".format(i)][2]
