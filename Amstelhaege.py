@@ -111,6 +111,25 @@ class ConstructionSite(object):
             value = 610000 + vrijstand * 0.06 * 610000
             return value
 
+    def moveHouse(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, value, type):
+    # move 1m up
+        # change coordinates
+        y_lu -= 2
+        y_ru -= 2
+        y_ld -= 2
+        y_rd -= 2
+
+        vrijstand = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd)
+        waarde = area.calculateValue(type, vrijstand)
+
+        # change values in array
+        for x in range(x_lu, x_ru):
+            self.area[(y_lu - 1, x)] = type
+            self.area[(y_lu - 2, x)] = type
+            self.area[(y_ld, x)] = 0
+            self.area[(y_ld - 1, x)] = 0
+
+
 
 def initializeSimulation(mais, bung, egws, width, height):
     """
