@@ -209,7 +209,6 @@ def initializeSimulation(mais, bung, egws, width, height):
         else:
             areaWaterPiece = random.randint(1, amountWater)
 
-        amountWater -= areaWaterPiece
         waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
         waterWidth = int(round(waterLength / waterRatio))
         x_pos = random.randint(0, width - waterLength)
@@ -225,6 +224,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[3]["water{0}".format(counter - 1)][5] = y_pos + waterWidth
             houses[3]["water{0}".format(counter - 1)][6] = x_pos + waterLength
             houses[3]["water{0}".format(counter - 1)][7] = y_pos + waterWidth
+            amountWater -= areaWaterPiece
             counter += 1
             print ("size:", areaWaterPiece)
 
