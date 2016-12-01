@@ -92,52 +92,55 @@ class ConstructionSite(object):
         y_coordinate = 0.0
 
         # loop through housetypes
-        for i in range(0,2):
+        for i in range(3):
+            print("housetype")
             # loop through houses of certain type
             for j in range(len(houses[i])):
+                print("         house")
                 # loop through corner coordinates
-                for k in range(0,3):
+                for k in range(4):
+                    print("             coordinate", k, i)
                     if k == 0:
                         if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][3]
-                            y_coordinate = houses[i]["maison{0}".format(j)][4]
+                            x_coordinate = houses[i]["maison{0}".format(j)][2]
+                            y_coordinate = houses[i]["maison{0}".format(j)][3]
                         elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][3]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][4]
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][2]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][3]
                         else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][3]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][4]
+                            x_coordinate = houses[i]["singlefamily{0}".format(j)][2]
+                            y_coordinate = houses[i]["singlefamily{0}".format(j)][3]
                     if k == 1:
                         if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][5]
-                            y_coordinate = houses[i]["maison{0}".format(j)][6]
+                            x_coordinate = houses[i]["maison{0}".format(j)][4]
+                            y_coordinate = houses[i]["maison{0}".format(j)][5]
                         elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][5]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][6]
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][4]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][5]
                         else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][5]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][6]
+                            x_coordinate = houses[i]["singlefamily{0}".format(j)][4]
+                            y_coordinate = houses[i]["singlefamily{0}".format(j)][5]
                     if k == 2:
                         if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][7]
-                            y_coordinate = houses[i]["maison{0}".format(j)][8]
+                            x_coordinate = houses[i]["maison{0}".format(j)][6]
+                            y_coordinate = houses[i]["maison{0}".format(j)][7]
                         elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][7]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][8]
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][6]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][7]
                         else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][7]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][8]
+                            x_coordinate = houses[i]["singlefamily{0}".format(j)][6]
+                            y_coordinate = houses[i]["singlefamily{0}".format(j)][7]
                     if k == 3:
                         if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][9]
-                            y_coordinate = houses[i]["maison{0}".format(j)][10]
+                            x_coordinate = houses[i]["maison{0}".format(j)][8]
+                            y_coordinate = houses[i]["maison{0}".format(j)][9]
 
                         elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][9]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][10]
+                            x_coordinate = houses[i]["bungalow{0}".format(j)][8]
+                            y_coordinate = houses[i]["bungalow{0}".format(j)][9]
                         else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][9]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][10]
+                            x_coordinate = houses[i]["singlefamily{0}".format(j)][8]
+                            y_coordinate = houses[i]["singlefamily{0}".format(j)][9]
 
                     coordistance = 0.0
 
@@ -145,15 +148,15 @@ class ConstructionSite(object):
                     if x_lu <= x_coordinate <= x_ru:
                         # kan in een functie (voor later)
                         if y_lu <= y_coordinate:
-                            coordistance = y_lu - y_coordinate
-                        else:
                             coordistance = y_coordinate - y_ld
+                        else:
+                            coordistance = y_lu - y_coordinate
                     # valt y coordinaat binnen huis -> muur tot muur.
                     elif y_lu <= y_coordinate <= y_ld:
                         if x_lu <= x_coordinate:
-                            coordistance = x_lu - x_coordinate
-                        else:
                             coordistance = x_coordinate - x_ru
+                        else:
+                            coordistance = x_lu - x_coordinate
                     #hoekgevallen
                     else:
                         # if, elif, else gebruiken?
@@ -170,8 +173,13 @@ class ConstructionSite(object):
                             # rightdown
                             coordistance = math.sqrt((y_coordinate - y_rd) ** 2 + (x_coordinate - x_rd) ** 2)
 
+                    #print(coordistance)
                     if coordistance < distance:
                         distance = coordistance
+
+        # check nog voor de afstand naar de kant
+        # bereken voor de vier muren de afstand
+        # als een van deze korter is --> nieuwe kortste afstand
 
         return round(distance, 2)
 
@@ -330,7 +338,7 @@ def initializeSimulation(mais, bung, egws, width, height):
     #plt.gray()
     plt.show()
 
-initializeSimulation(9, 15, 36, 300, 320)
-initializeSimulation(6, 10, 24, 300, 320)
-initializeSimulation(3, 5, 12, 300, 320)
+#initializeSimulation(9, 15, 36, 300, 320)
+#initializeSimulation(6, 10, 24, 300, 320)
+#initializeSimulation(3, 5, 12, 300, 320)
 initializeSimulation(2, 1, 1, 300, 320)
