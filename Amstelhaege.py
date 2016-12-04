@@ -263,12 +263,11 @@ def initializeSimulation(mais, bung, egws, width, height):
     waterLength = 0
     waterWidth = 0
     while counter <= waterPieces:
-        print "Entered while counter < waterPieces"
         if counter == waterPieces:
             areaWaterPiece = amountWater
         else:
             areaWaterPiece = random.randint(1, amountWater)
-        print (areaWaterPiece)
+        print ("size:", areaWaterPiece)
         amountWater -= areaWaterPiece
         waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
         waterWidth = int(round(waterLength / waterRatio))
