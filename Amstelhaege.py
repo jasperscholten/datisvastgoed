@@ -229,7 +229,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[3]["water{0}".format(counter - 1)][7] = y_pos + waterWidth
             amountWater -= areaWaterPiece
             counter += 1
-            print ("size:", areaWaterPiece)
+            #print ("size:", areaWaterPiece)
 
     # build right amount of maisons
     counter = 0
@@ -299,14 +299,49 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
 
-    print houses
-    print "Total Value:", area.totalValue(houses)
-
-    plt.imshow(area.area)
+    #plt.imshow(area.area)
     #plt.gray()
-    plt.show()
+    #plt.show()
 
-initializeSimulation(9, 15, 36, 300, 320)
+    return area.totalValue(houses)
+
+#initializeSimulation(9, 15, 36, 300, 320)
 #initializeSimulation(6, 10, 24, 300, 320)
 #initializeSimulation(3, 5, 12, 300, 320)
 #initializeSimulation(2, 1, 1, 300, 320)
+
+def randomAlgorithm(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+
+    for i in range(runs):
+        value60.append(initializeSimulation(9, 15, 36, 300, 320))
+        value40.append(initializeSimulation(6, 10, 24, 300, 320))
+        value20.append(initializeSimulation(3, 5, 12, 300, 320))
+        print i
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+randomAlgorithm(1000)
