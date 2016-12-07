@@ -79,101 +79,88 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam, water
 
-    def calculateVrijstand(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses):
+    # zorg ervoor dat: a < b, c < d
+    def betweenCorners(self, a, b, c, d):
+        if (a >= c and a <= d) or (b >= c and b <= d) or (c >= a and c <= b) or (d >= a and d <= b):
+            return True
+        else:
+            return False
 
-        # Wat we nu doen is (zo goed als) continu, met komma getallen.
-        # Kan je in principe hogere, nauwkeurigere waarde mee vinden.
-        # discreet is met gehele getallen -> Wouter
-        # hoe meer discretiseren, hoe minder accuraat: keuze op dit gebied is
-        # interresant voor verslag.
+    distance = 0
 
-        distance = 1000000.0
-        x_coordinate = 0.0
-        y_coordinate = 0.0
+    # huis 1: ax, ay - huis 2: bx, by
+    def pythagoras(self, ax, ay, bx, by):
+        length = abs(ax - bx)
+        width = abs(ay - by)
 
-        # loop through housetypes
-        for i in range(0,2):
-            # loop through houses of certain type
-            for j in range(len(houses[i])):
-                # loop through corner coordinates
-                for k in range(0,3):
-                    if k == 0:
-                        if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][3]
-                            y_coordinate = houses[i]["maison{0}".format(j)][4]
-                        elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][3]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][4]
-                        else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][3]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][4]
-                    if k == 1:
-                        if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][5]
-                            y_coordinate = houses[i]["maison{0}".format(j)][6]
-                        elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][5]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][6]
-                        else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][5]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][6]
-                    if k == 2:
-                        if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][7]
-                            y_coordinate = houses[i]["maison{0}".format(j)][8]
-                        elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][7]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][8]
-                        else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][7]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][8]
-                    if k == 3:
-                        if i == 0:
-                            x_coordinate = houses[i]["maison{0}".format(j)][9]
-                            y_coordinate = houses[i]["maison{0}".format(j)][10]
+        return math.sqrt(length**2 + width**2)
 
-                        elif i == 1:
-                            x_coordinate = houses[i]["bungalow{0}".format(j)][9]
-                            y_coordinate = houses[i]["bungalow{0}".format(j)][10]
-                        else:
-                            x_coordinate = houses[i]["singlefam{0}".format(j)][9]
-                            y_coordinate = houses[i]["singlefam{0}".format(j)][10]
+    def calculateVrijstand(self, houses):
 
-                    coordistance = 0.0
+        # houses bestaat uit twee arrays, 1 voor het huis dat bekeken wordt, 1 voor een willekeurig ander huis
+        # houses = ['value', 'vrijstand', 5, 5, 6, 5, 5, 6, 6, 6], ['value', 'vrijstand', 0, 10, 10, 10, 0, 20, 10, 20]
 
-                    # valt x coordinaat binnen huis -> muur tot muur.
-                    if x_lu <= x_coordinate <= x_ru:
-                        # kan in een functie (voor later)
-                        if y_lu <= y_coordinate:
-                            coordistance = y_lu - y_coordinate
-                        else:
-                            coordistance = y_coordinate - y_ld
-                    # valt y coordinaat binnen huis -> muur tot muur.
-                    elif y_lu <= y_coordinate <= y_ld:
-                        if x_lu <= x_coordinate:
-                            coordistance = x_lu - x_coordinate
-                        else:
-                            coordistance = x_coordinate - x_ru
-                    #hoekgevallen
-                    else:
-                        # if, elif, else gebruiken?
-                        if x_coordinate < x_lu and y_coordinate < y_lu:
-                            # leftup
-                            coordistance = math.sqrt((y_lu - y_coordinate) ** 2 + (x_lu - x_coordinate) ** 2)
-                        if x_coordinate > x_ru and y_coordinate < y_ru:
-                            # rightup
-                            coordistance = math.sqrt((y_ru - y_coordinate) ** 2 + (x_coordinate - x_ru) ** 2)
-                        if x_coordinate < x_ld and y_coordinate > y_ld:
-                            # leftdown
-                            coordistance = math.sqrt((y_coordinate - y_ld) ** 2 + (x_ld - x_coordinate) ** 2)
-                        if x_coordinate > x_rd and y_coordinate > y_rd:
-                            # rightdown
-                            coordistance = math.sqrt((y_coordinate - y_rd) ** 2 + (x_coordinate - x_rd) ** 2)
-
-                    if coordistance < distance:
-                        distance = coordistance
+        # boven
+        # huis 1 y_lu >= huis 2 y_ld
+        if houses[0][3] >= houses[1][7]:
+        # huis 2 x_lu en/of x_ru tussen huis 1 x_lu en x_ru
+            if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
+                distance = houses[0][3] - houses[1][7]
+                #print "huis boven tussen:", distance
+            else:
+                # 1_lu, 2_rd
+                distance = min(self.pythagoras(houses[0][2], houses[0][3], houses[1][8], houses[1][9]), self.pythagoras(houses[0][4], houses[0][5], houses[1][6], houses[1][7]))
+                #print "huis boven hoeken:", distance
+        # onder
+        # huis 1 y_ld <= huis 2 y_lu
+        elif houses[0][7] <= houses[1][3]:
+            if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
+                distance = houses[1][3] - houses[0][7]
+                #print "huis onder tussen:", distance
+            else:
+                distance = min(self.pythagoras(houses[0][6], houses[0][7], houses[1][4], houses[1][5]), self.pythagoras(houses[0][8], houses[0][9], houses[1][2], houses[1][3]))
+                #print "huis onder hoeken:", distance
+        else:
+            # left
+            if houses[0][2] >= houses[1][4]:
+                distance = houses[0][2] - houses[1][4]
+                #print "huis links", distance
+            # right
+            else:
+                distance = houses[1][2] - houses[0][4]
+                #print "huis rechts", distance
 
         return distance
+
+    def getVrijstand(self, currentHouse, houses):
+
+        vrijstand = 1000000
+
+        for housetype in range(3):
+            for number in range(len(houses[housetype])):
+
+                if housetype == 2:
+                    twoHouses = currentHouse, houses[housetype]["singlefamily{0}".format(number)]
+                elif housetype == 1:
+                    twoHouses = currentHouse, houses[housetype]["bungalow{0}".format(number)]
+                else:
+                    twoHouses = currentHouse, houses[housetype]["maison{0}".format(number)]
+
+                #gedeeld door 2 vanwege blokken van 0.5 meter
+                #vrijstand nauwkeuriger berekenen om preciezere value te krijgen
+                currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+
+                # check if vrijstand is kleiner
+                if 0 <= currentVrijstand < vrijstand:
+                    vrijstand = currentVrijstand
+
+        # bereken of afstand tot muur kleiner is.
+        distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+        if distanceToWall < vrijstand:
+            #gedeeld door 2 vanwege blokken van 0.5 meter
+            vrijstand = distanceToWall/2.0
+
+        return vrijstand
 
     def calculateValue(self, type, vrijstand):
         '''
@@ -182,13 +169,12 @@ class ConstructionSite(object):
         '''
         if type == 1:
             value = 285000 + vrijstand * 0.03 * 285000
-            return value
         elif type == 2:
             value = 399000 + vrijstand * 0.04 * 399000
-            return value
         elif type == 3:
             value = 610000 + vrijstand * 0.06 * 610000
-            return value
+
+        return round(value, 2)
 
     def moveHouse(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, value, type):
     # move 1m up
@@ -245,8 +231,21 @@ class ConstructionSite(object):
             self.area[(y_ld, x)] = 0
             self.area[(y_ld - 1, x)] = 0
 
+    def totalValue(self, houses):
 
+        value = 0
 
+        for housetype in range(3):
+            for number in range(len(houses[housetype])):
+
+                if housetype == 2:
+                    value += houses[housetype]["singlefamily{0}".format(number)][0]
+                elif housetype == 1:
+                    value += houses[housetype]["bungalow{0}".format(number)][0]
+                else:
+                    value += houses[housetype]["maison{0}".format(number)][0]
+
+        return value
 
 def initializeSimulation(mais, bung, egws, width, height):
     """
@@ -267,8 +266,7 @@ def initializeSimulation(mais, bung, egws, width, height):
             areaWaterPiece = amountWater
         else:
             areaWaterPiece = random.randint(1, amountWater)
-        print ("size:", areaWaterPiece)
-        amountWater -= areaWaterPiece
+
         waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
         waterWidth = int(round(waterLength / waterRatio))
         x_pos = random.randint(0, width - waterLength)
@@ -284,7 +282,9 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[3]["water{0}".format(counter - 1)][5] = y_pos + waterWidth
             houses[3]["water{0}".format(counter - 1)][6] = x_pos + waterLength
             houses[3]["water{0}".format(counter - 1)][7] = y_pos + waterWidth
+            amountWater -= areaWaterPiece
             counter += 1
+            #print ("size:", areaWaterPiece)
 
     # build right amount of maisons
     counter = 0
@@ -343,51 +343,60 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     # calculateVrijstand and calculateValue for maison
     for i in range(mais):
-        x_lu = houses[0]["maison{0}".format(i)][2]
-        y_lu = houses[0]["maison{0}".format(i)][3]
-        x_ru = houses[0]["maison{0}".format(i)][4]
-        y_ru = houses[0]["maison{0}".format(i)][5]
-        x_ld = houses[0]["maison{0}".format(i)][6]
-        y_ld = houses[0]["maison{0}".format(i)][7]
-        x_rd = houses[0]["maison{0}".format(i)][8]
-        y_rd = houses[0]["maison{0}".format(i)][9]
-        houses[0]["maison{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
-        value = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
-        houses[0]["maison{0}".format(i)][0] = value
+        houses[0]["maison{0}".format(i)][1] = area.getVrijstand(houses[0]["maison{0}".format(i)], houses)
+        houses[0]["maison{0}".format(i)][0] = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
 
     for i in range(bung):
-        x_lu = houses[1]["bungalow{0}".format(i)][2]
-        y_lu = houses[1]["bungalow{0}".format(i)][3]
-        x_ru = houses[1]["bungalow{0}".format(i)][4]
-        y_ru = houses[1]["bungalow{0}".format(i)][5]
-        x_ld = houses[1]["bungalow{0}".format(i)][6]
-        y_ld = houses[1]["bungalow{0}".format(i)][7]
-        x_rd = houses[1]["bungalow{0}".format(i)][8]
-        y_rd = houses[1]["bungalow{0}".format(i)][9]
-        houses[1]["bungalow{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
-        value = area.calculateValue(2, houses[1]["bungalow{0}".format(i)][1])
-        houses[1]["bungalow{0}".format(i)][1] = value
+        houses[1]["bungalow{0}".format(i)][1] = area.getVrijstand(houses[1]["bungalow{0}".format(i)], houses)
+        houses[1]["bungalow{0}".format(i)][0] = area.calculateValue(2, houses[1]["bungalow{0}".format(i)][1])
 
     for i in range(egws):
-        x_lu = houses[2]["singlefamily{0}".format(i)][2]
-        y_lu = houses[2]["singlefamily{0}".format(i)][3]
-        x_ru = houses[2]["singlefamily{0}".format(i)][4]
-        y_ru = houses[2]["singlefamily{0}".format(i)][5]
-        x_ld = houses[2]["singlefamily{0}".format(i)][6]
-        y_ld = houses[2]["singlefamily{0}".format(i)][7]
-        x_rd = houses[2]["singlefamily{0}".format(i)][8]
-        y_rd = houses[2]["singlefamily{0}".format(i)][9]
-        houses[2]["singlefamily{0}".format(i)][1] = area.calculateVrijstand(x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, houses)
-        value = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
-        houses[2]["singlefamily{0}".format(i)][0] = value
+        houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
+        houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
 
-
-    print houses
-
-    plt.imshow(area.area)
+    #plt.imshow(area.area)
     #plt.gray()
+    #plt.show()
+
+    return area.totalValue(houses)
+
+#initializeSimulation(9, 15, 36, 300, 320)
+#initializeSimulation(6, 10, 24, 300, 320)
+#initializeSimulation(3, 5, 12, 300, 320)
+#initializeSimulation(2, 1, 1, 300, 320)
+
+def randomAlgorithm(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+
+    for i in range(runs):
+        value60.append(initializeSimulation(9, 15, 36, 300, 320))
+        value40.append(initializeSimulation(6, 10, 24, 300, 320))
+        value20.append(initializeSimulation(3, 5, 12, 300, 320))
+        print i
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
     plt.show()
 
-initializeSimulation(9, 15, 36, 300, 320)
-initializeSimulation(6, 10, 24, 300, 320)
-initializeSimulation(3, 5, 12, 300, 320)
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+randomAlgorithm(1000)
