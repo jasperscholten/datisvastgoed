@@ -2,6 +2,7 @@ import numpy
 import random
 import math
 import matplotlib.pyplot as plt
+#test
 
 class ConstructionSite(object):
     """
@@ -175,6 +176,61 @@ class ConstructionSite(object):
             value = 610000 + vrijstand * 0.06 * 610000
 
         return round(value, 2)
+
+    def moveHouse(self, x_lu, y_lu, x_ru, y_ru, x_ld, y_ld, x_rd, y_rd, value, type):
+    # move 1m up
+        # change coordinates
+        y_lu_up = y_lu - 2
+        y_ru_up = y_ru - 2
+        y_ld_up = y_ld - 2
+        y_rd_up = y_rd - 2
+
+        #calcualte vrijstand and value
+        vrijstand_up = area.calculateVrijstand(x_lu, y_lu_up, x_ru, y_ru_up, x_ld, y_ld_up, x_rd, y_rd_up)
+        waarde_up = area.calculateValue(type, vrijstand_up)
+
+    # move 1m down
+        # change coordinates
+        y_lu_dwn = y_lu + 2
+        y_ru_dwn = y_ru + 2
+        y_ld_dwn = y_ld + 2
+        y_rd_dwn = y_rd + 2
+
+        vrijstand_dwn = area.calculateVrijstand(x_lu, y_lu_dwn, x_ru, y_ru_dwn, x_ld, y_ld_dwn, x_rd, y_rd_dwn)
+        waarde_dwn = area.calculateValue(type, vrijstand_dwn)
+
+    # move 1m to left
+        # change coordinates
+        x_lu_lft = x_lu - 2
+        x_ru_lft = x_ru - 2
+        x_ld_lft = x_ld - 2
+        x_rd_lft = x_rd - 2
+
+        vrijstand_lft = area.calculateVrijstand(x_lu_lft, y_lu, x_ru_lft, y_ru, x_ld_lft, y_ld, x_rd_lft, y_rd)
+        waarde_lft = area.calculateValue(type, vrijstand_lft)
+
+    # move 1m to left
+        # change coordinates
+        x_lu_rght = x_lu + 2
+        x_ru_rght = x_ru + 2
+        x_ld_rght = x_ld + 2
+        x_rd_rght = x_rd + 2
+
+        vrijstand_rght = area.calculateVrijstand(x_lu_rght, y_lu, x_ru_rght, y_ru, x_ld_rght, y_ld, x_rd_rhgt, y_rd)
+        waarde_rght = area.calculateValue(type, vrijstand_rght)
+
+        # pick highest value
+        waarde = max([waarde_rght, waarde_lft, waarde_dwn, waarde_up])
+
+
+
+
+        # change values in array
+        for x in range(x_lu, x_ru):
+            self.area[(y_lu - 1, x)] = type
+            self.area[(y_lu - 2, x)] = type
+            self.area[(y_ld, x)] = 0
+            self.area[(y_ld - 1, x)] = 0
 
     def totalValue(self, houses):
 
