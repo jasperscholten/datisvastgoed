@@ -222,15 +222,31 @@ class ConstructionSite(object):
         # pick highest value
         waarde = max([waarde_rght, waarde_lft, waarde_dwn, waarde_up])
 
-
-
-
-        # change values in array
-        for x in range(x_lu, x_ru):
-            self.area[(y_lu - 1, x)] = type
-            self.area[(y_lu - 2, x)] = type
-            self.area[(y_ld, x)] = 0
-            self.area[(y_ld - 1, x)] = 0
+        if waarde > value:
+            if waarde == waarde_rght:
+                for y in range(y_lu, y_ld):
+                    self.area[(y, x_ru + 1)] == type
+                    self.area[(y, x_ru + 2)] == type
+                    self.area[(y, x_lu)] == type
+                    self.area[(y, x_lu + 1)] == type
+            elif waarde == waarde_lft:
+                for y in range(y_lu, y_ld):
+                    self.area[(y, x_lu - 1)] == type
+                    self.area[(y, x_lu - 2)] == type
+                    self.area[(y, x_ru)] == type
+                    self.area[(y, x_ru - 1)] == type
+            elif waarde == waarde_dwn:
+                for x in range(x_lu, x_ru):
+                    self.area[(y_ld + 1, x)] = type
+                    self.area[(y_ld + 2, x)] = type
+                    self.area[(y_lu, x)] = 0
+                    self.area[(y_lu + 1, x)] = 0
+            else waarde == waarde_up:
+                for x in range(x_lu, x_ru):
+                    self.area[(y_lu - 1, x)] = type
+                    self.area[(y_lu - 2, x)] = type
+                    self.area[(y_ld, x)] = 0
+                    self.area[(y_ld - ydirection, x)] = 0
 
     def totalValue(self, houses):
 
