@@ -163,6 +163,37 @@ class ConstructionSite(object):
 
         return vrijstand
 
+    def getFilteredVrijstand(self, currentHouse, houses):
+
+        # Hoe weten welke variant we bekijken?
+        # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
+
+        x_lu = currentHouse[2] - 100
+        x_ru = currentHouse[4] + 100
+        y_lu = currentHouse[3] - 100
+        y_ld = currentHouse[7] + 100
+
+        #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
+        selection = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection.update = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection.update = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+
+        vrijstand = 1000000
+
+        for house in selection:
+            twohouses = currentHouse, selection[house]
+
+            currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+
+            if 0 <= currentVrijstand < vrijstand:
+                vrijstand = currentVrijstand
+
+        distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+        if distanceToWall < vrijstand:
+            vrijstand = distanceToWall/2.0
+
+        return vrijstand
+
     def calculateValue(self, type, vrijstand):
         '''
         waarde = beginwaarde + vrijstand * procentuele waardevermeerdering per
@@ -376,15 +407,15 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
 
-    #plt.imshow(area.area)
+    plt.imshow(area.area)
     #plt.gray()
-    #plt.show()
+    plt.show()
 
     return area.totalValue(houses)
 
-#initializeSimulation(9, 15, 36, 300, 320)
-#initializeSimulation(6, 10, 24, 300, 320)
-#initializeSimulation(3, 5, 12, 300, 320)
+initializeSimulation(9, 15, 36, 300, 320)
+initializeSimulation(6, 10, 24, 300, 320)
+initializeSimulation(3, 5, 12, 300, 320)
 #initializeSimulation(2, 1, 1, 300, 320)
 
 def randomAlgorithm(runs):
@@ -429,4 +460,4 @@ def randomAlgorithm(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-randomAlgorithm(5000)
+#randomAlgorithm(5000)
