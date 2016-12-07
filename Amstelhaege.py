@@ -80,6 +80,10 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam, water
 
+    def savePositions(self, x_pos, y_pos, length, width):
+        positions = ['value', 'vrijstand', x_pos, y_pos, x_pos + length, y_pos, x_pos, y_pos + width, x_pos + length, y_pos + width]
+        return positions
+
     # zorg ervoor dat: a < b, c < d
     def betweenCorners(self, a, b, c, d):
         if (a >= c and a <= d) or (b >= c and b <= d) or (c >= a and c <= b) or (d >= a and d <= b):
@@ -327,17 +331,9 @@ def initializeSimulation(mais, bung, egws, width, height):
 
         if area.checkIfPossible(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth) == True:
             area.buildWater(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
-            houses[3]["water{0}".format(counter - 1)][0] = x_pos
-            houses[3]["water{0}".format(counter - 1)][1] = y_pos
-            houses[3]["water{0}".format(counter - 1)][2] = x_pos + waterLength
-            houses[3]["water{0}".format(counter - 1)][3] = y_pos
-            houses[3]["water{0}".format(counter - 1)][4] = x_pos
-            houses[3]["water{0}".format(counter - 1)][5] = y_pos + waterWidth
-            houses[3]["water{0}".format(counter - 1)][6] = x_pos + waterLength
-            houses[3]["water{0}".format(counter - 1)][7] = y_pos + waterWidth
+            houses[3]["water{0}".format(counter - 1)] = area.savePositions(x_pos, y_pos, waterLength, waterWidth)
             amountWater -= areaWaterPiece
             counter += 1
-            #print ("size:", areaWaterPiece)
 
     # build right amount of maisons
     counter = 0
@@ -347,14 +343,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21) == True:
             area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
             area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
-            houses[0]["maison{0}".format(counter)][2] = x_pos
-            houses[0]["maison{0}".format(counter)][3] = y_pos
-            houses[0]["maison{0}".format(counter)][4] = x_pos + 22
-            houses[0]["maison{0}".format(counter)][5] = y_pos
-            houses[0]["maison{0}".format(counter)][6] = x_pos
-            houses[0]["maison{0}".format(counter)][7] = y_pos + 21
-            houses[0]["maison{0}".format(counter)][8] = x_pos + 22
-            houses[0]["maison{0}".format(counter)][9] = y_pos + 21
+            houses[0]["maison{0}".format(counter)] = area.savePositions(x_pos, y_pos, 22, 21)
             counter += 1
 
 
@@ -366,14 +355,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 20, y_pos, y_pos + 15) == True:
             area.buildVrijstand(x_pos, x_pos + 20, y_pos, y_pos + 15, 6)
             area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
-            houses[1]["bungalow{0}".format(counter)][2] = x_pos
-            houses[1]["bungalow{0}".format(counter)][3] = y_pos
-            houses[1]["bungalow{0}".format(counter)][4] = x_pos + 20
-            houses[1]["bungalow{0}".format(counter)][5] = y_pos
-            houses[1]["bungalow{0}".format(counter)][6] = x_pos
-            houses[1]["bungalow{0}".format(counter)][7] = y_pos + 15
-            houses[1]["bungalow{0}".format(counter)][8] = x_pos + 20
-            houses[1]["bungalow{0}".format(counter)][9] = y_pos + 15
+            houses[1]["bungalow{0}".format(counter)] = area.savePositions(x_pos, y_pos, 20, 15)
             counter += 1
 
     # build right amount of egws
@@ -384,14 +366,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16) == True:
             area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
-            houses[2]["singlefamily{0}".format(counter)][2] = x_pos
-            houses[2]["singlefamily{0}".format(counter)][3] = y_pos
-            houses[2]["singlefamily{0}".format(counter)][4] = x_pos + 16
-            houses[2]["singlefamily{0}".format(counter)][5] = y_pos
-            houses[2]["singlefamily{0}".format(counter)][6] = x_pos
-            houses[2]["singlefamily{0}".format(counter)][7] = y_pos + 16
-            houses[2]["singlefamily{0}".format(counter)][8] = x_pos + 16
-            houses[2]["singlefamily{0}".format(counter)][9] = y_pos + 16
+            houses[2]["singlefamily{0}".format(counter)] = area.savePositions(x_pos, y_pos, 16, 16)
             counter += 1
 
     # calculateVrijstand and calculateValue for maison
@@ -407,15 +382,15 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
 
-    plt.imshow(area.area)
+    #plt.imshow(area.area)
     #plt.gray()
-    plt.show()
+    #plt.show()
 
     return area.totalValue(houses)
 
-initializeSimulation(9, 15, 36, 300, 320)
-initializeSimulation(6, 10, 24, 300, 320)
-initializeSimulation(3, 5, 12, 300, 320)
+#initializeSimulation(9, 15, 36, 300, 320)
+#initializeSimulation(6, 10, 24, 300, 320)
+#initializeSimulation(3, 5, 12, 300, 320)
 #initializeSimulation(2, 1, 1, 300, 320)
 
 def randomAlgorithm(runs):
@@ -460,4 +435,4 @@ def randomAlgorithm(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-#randomAlgorithm(5000)
+randomAlgorithm(100)
