@@ -266,10 +266,15 @@ def initializeSimulation(mais, bung, egws, width, height):
         if counter == waterPieces:
             areaWaterPiece = amountWater
         else:
-            areaWaterPiece = random.randint(1, amountWater)
+            if amountWater > 0:
+                areaWaterPiece = random.randint(1, amountWater)
 
-        waterLength = int(round(math.sqrt(waterRatio * areaWaterPiece)))
+        sqrtInput = waterRatio * areaWaterPiece
+        if sqrtInput < 0:
+            sqrtInput = 0
+        waterLength = int(round(math.sqrt(sqrtInput)))
         waterWidth = int(round(waterLength / waterRatio))
+
         x_pos = random.randint(0, width - waterLength)
         y_pos = random.randint(0, height - waterWidth)
 
@@ -400,4 +405,12 @@ def randomAlgorithm(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-randomAlgorithm(1000)
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+randomAlgorithm(5000)
