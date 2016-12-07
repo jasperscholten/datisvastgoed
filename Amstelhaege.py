@@ -2,6 +2,7 @@ import numpy
 import random
 import math
 import matplotlib.pyplot as plt
+#test
 
 class ConstructionSite(object):
     """
