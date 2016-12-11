@@ -212,85 +212,96 @@ class ConstructionSite(object):
 
         return round(value, 2)
 
-    def moveHouse(self, currentHouse, houses, type, value):
+    def moveHouse(self, houses, type, i, fieldvalue):
     # currentHouse = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
     # move 1m up
         # change coordinates
-        currentHouse_up = currentHouse
+        houses_up = houses
 
-        currentHouse_up[3] = currentHouse_up[3] - 2
-        currentHouse_up[5] = currentHouse_up[5] - 2
-        currentHouse_up[7] = currentHouse_up[7] - 2
-        currentHouse_up[9] = currentHouse_up[9] - 2
+        houses_up[0][type.format(i)][3] = houses_up[0][type.format(i)][3] - 2
+        houses_up[0][type.format(i)][5] = houses_up[0][type.format(i)][5] - 2
+        houses_up[0][type.format(i)][7] = houses_up[0][type.format(i)][7] - 2
+        houses_up[0][type.format(i)][9] = houses_up[0][type.format(i)][9] - 2
 
         #calcualte vrijstand and value
-        currentHouse_up[1] = area.getFilteredVrijstand(currentHouse_up, houses)
-        currentHouse_up[0] = area.calculateValue(type, currentHouse_up[1])
+        # currentHouse_up[1] = area.getFilteredVrijstand(currentHouse_up, houses)
+        houses_up[0][type.format(i)][1] = self.getFilteredVrijstand(houses_up, i)
+        # currentHouse_up[0] = area.calculateValue(type, currentHouse_up[1])
+        houses_up[0][type.format(i)][0] = self.getFilteredVrijstand(houses_up, i)
+        fieldvalue_up = self.totalValue(houses_up)
 
     # move 1m down
         # change coordinates
-        currentHouse_dwn = currentHouse
+        houses_dwn = houses
 
-        currentHouse_dwn[3] = currentHouse_dwn[3] + 2
-        currentHouse_dwn[5] = currentHouse_dwn[5] + 2
-        currentHouse_dwn[7] = currentHouse_dwn[7] + 2
-        currentHouse_dwn[9] = currentHouse_dwn[9] + 2
+        houses_dwn[0][type.format(i)][3] = houses_dwn[0][type.format(i)][3] + 2
+        houses_dwn[0][type.format(i)][5] = houses_dwn[0][type.format(i)][5] + 2
+        houses_dwn[0][type.format(i)][7] = houses_dwn[0][type.format(i)][7] + 2
+        houses_dwn[0][type.format(i)][9] = houses_dwn[0][type.format(i)][9] + 2
 
-        currentHouse_dwn[1] = area.calculateVrijstand(currentHouse_dwn, houses)
-        currentHouse_dwn[0] = area.calculateValue(type, currentHouse_dwn[1])
+        houses_dwn[0][type.format(i)][1] = self.getFilteredVrijstand(houses_dwn, i)
+        houses_dwn[0][type.format(i)][0] = self.getFilteredVrijstand(houses_dwn, i)
+
+        fieldvalue_dwn = self.totalValue(houses_dwn)
 
     # move 1m to left
         # change coordinates
-        currentHouse_lft = currentHouse
+        houses_lft = houses
 
-        currentHouse_lft[2] = currentHouse_lft[2] - 2
-        currentHouse_lft[4] = currentHouse_lft[4] - 2
-        currentHouse_lft[6] = currentHouse_lft[6] - 2
-        currentHouse_lft[8] = currentHouse_lft[8] - 2
+        houses_lft[0][type.format(i)][2] = houses_lft[0][type.format(i)][2] - 2
+        houses_lft[0][type.format(i)][4] = houses_lft[0][type.format(i)][4] - 2
+        houses_lft[0][type.format(i)][6] = houses_lft[0][type.format(i)][6] - 2
+        houses_lft[0][type.format(i)][8] = houses_lft[0][type.format(i)][8] - 2
 
-        currentHouse_lft[1] = area.calculateVrijstand(currentHouse_lft, houses)
-        currentHouse_lft[0] = area.calculateValue(type, currentHouse_lft[1])
+        houses_lft[0][type.format(i)][1] = self.getFilteredVrijstand(houses_lft, i)
+        houses_lft[0][type.format(i)][0] = self.getFilteredVrijstand(houses_lft, i)
+
+        fieldvalue_lft = self.totalValue(houses_lft)
 
     # move 1m to right
         # change coordinates
-        currentHouse_lft =currentHouse
+        houses_rght = houses
 
-        currentHouse_rght[2] = currentHouse_rght[2] + 2
-        currentHouse_rght[4] = currentHouse_rght[4] + 2
-        currentHouse_rght[6] = currentHouse_rght[6] + 2
-        currentHouse_rght[8] = currentHouse_rght[8] + 2
+        houses_rght[0][type.format(i)][2] = houses_rght[0][type.format(i)][2] + 2
+        houses_rght[0][type.format(i)][4] = houses_rght[0][type.format(i)][4] + 2
+        houses_rght[0][type.format(i)][6] = houses_rght[0][type.format(i)][6] + 2
+        houses_rght[0][type.format(i)][8] = houses_rght[0][type.format(i)][8] + 2
 
-        currentHouse_rght[1] = area.calculateVrijstand(currentHouse_rght, houses)
-        currentHouse_rght[0] = area.calculateValue(type, currentHouse_rght[1])
+        houses_rght[0][type.format(i)][1] = self.getFilteredVrijstand(houses_rght, i)
+        houses_rght[0][type.format(i)][0] = self.getFilteredVrijstand(houses_rght, i)
+
+        fieldvalue_rght = self.totalValue(houses_rght)
 
         # pick highest value
-        newvalue = max([currentHouse_rght[0], currentHouse_lft[0], currentHouse_dwn[0], currentHouse_up[0]])
+        newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
 
-        if newvalue > value:
-            if waarde == currentHouse_rght[0]:
-                for y in range(currentHouse_rght[3], currentHouse_rght[7]):
-                    self.area[(y, currentHouse_rght[4] + 1)] == type
-                    self.area[(y, currentHouse_rght[4] + 2)] == type
-                    self.area[(y, currentHouse_rght[2])] == type
-                    self.area[(y, currentHouse_rght[2] + 1)] == type
-            elif waarde == currentHouse_lft[0]:
-                for y in range(currentHouse_lft[3], currentHouse_lft[7]):
-                    self.area[(y, currentHouse_lft[2] - 1)] == type
-                    self.area[(y, currentHouse_lft[2] - 2)] == type
-                    self.area[(y, currentHouse_lft[4])] == type
-                    self.area[(y, currentHouse_lft[4] - 1)] == type
-            elif waarde == currentHouse_dwn[0]:
-                for x in range(currentHouse_dwn[2], currentHouse_dwn[4]):
-                    self.area[(currentHouse_dwn[7] + 1, x)] = type
-                    self.area[(currentHouse_dwn[7] + 2, x)] = type
-                    self.area[(y_lu, x)] = 0
-                    self.area[(y_lu + 1, x)] = 0
+        if newfieldfieldvalue > fieldvalue:
+            if newfieldfieldvalue == fieldvalue_rght:
+                for y in range(houses_rght[0][type.format(i)][3], houses_rght[0][type.format(i)][7]):
+                    self.area[(y, houses_rght[0][type.format(i)][4] + 1)] == type
+                    self.area[(y, houses_rght[0][type.format(i)][4] + 2)] == type
+                    self.area[(y, houses_rght[0][type.format(i)][2])] == type
+                    self.area[(y, houses_rght[0][type.format(i)][2] + 1)] == type
+
+            elif newfieldfieldvalue == fieldvalue_lft:
+                for y in range(houses_lft[0][type.format(i)][3], houses_lft[0][type.format(i)][7]):
+                    self.area[(y, houses_lft[0][type.format(i)][2] - 1)] == type
+                    self.area[(y, houses_lft[0][type.format(i)][2] - 2)] == type
+                    self.area[(y, houses_lft[0][type.format(i)][4])] == type
+                    self.area[(y, houses_lft[0][type.format(i)][4] - 1)] == type
+
+            elif newfieldfieldvalue == fieldvalue_dwn:
+                for x in range(houses_dwn[0][type.format(i)][2], houses_dwn[0][type.format(i)][4]):
+                    self.area[(houses_dwn[0][type.format(i)][7] + 1, x)] = type
+                    self.area[(houses_dwn[0][type.format(i)][7] + 2, x)] = type
+                    self.area[(houses_dwn[0][type.format(i)][3], x)] = 0
+                    self.area[(houses_dwn[0][type.format(i)][3] + 1, x)] = 0
             else:
-                for x in range(currentHouse_up[2], currentHouse_up[4]):
-                    self.area[(currentHouse_up[3] - 1, x)] = type
-                    self.area[(currentHouse_up[3] - 2, x)] = type
-                    self.area[(currentHouse_up[7], x)] = 0
-                    self.area[(currentHouse_up[7] - 1, x)] = 0
+                for x in range(houses_up[0][type.format(i)][2], houses_up[0][type.format(i)][4]):
+                    self.area[(houses_up[0][type.format(i)][3] - 1, x)] = type
+                    self.area[(houses_up[0][type.format(i)][3] - 2, x)] = type
+                    self.area[(houses_up[0][type.format(i)][7], x)] = 0
+                    self.area[(houses_up[0][type.format(i)][7] - 1, x)] = 0
 
     def totalValue(self, houses):
 
@@ -314,7 +325,7 @@ def initializeSimulation(mais, bung, egws, width, height):
     """
     area = ConstructionSite(width, height)
     waterPieces = random.randint(1,4)
-    waterRatio = random.randint(1,4)
+
     amountWater = 19200
     houses = area.createVariables(waterPieces, mais, bung, egws)
 
@@ -328,7 +339,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         else:
             if amountWater > 0:
                 areaWaterPiece = random.randint(1, amountWater)
-
+        waterRatio = random.randint(1,4)
         sqrtInput = waterRatio * areaWaterPiece
         if sqrtInput < 0:
             sqrtInput = 0
@@ -391,9 +402,21 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
 
-    #plt.imshow(area.area)
-    #plt.gray()
-    #plt.show()
+    # calculate total value of area
+    totalvalue = area.totalValue(houses)
+
+
+    # move houses and return houses area with changed values
+    for i in range(mais):
+        houses = area.moveHouse(houses, "maison{0}", i, totalvalue)
+    for i in range(bung):
+        houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue)
+    for i in range(egws):
+        houses = area.moveHouse(houses, "egws{0}", i, totalvalue)
+
+
+    plt.imshow(area.area)
+    plt.show()
 
     return area.totalValue(houses)
 
@@ -444,4 +467,4 @@ def randomAlgorithm(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-randomAlgorithm(100)
+randomAlgorithm(1)
