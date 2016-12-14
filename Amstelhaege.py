@@ -172,9 +172,8 @@ class ConstructionSite(object):
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-        print houses
+
         x_lu = houses[type][type_string.format(i)][2] - 100
-        print x_lu
         x_ru = houses[type][type_string.format(i)][4] + 100
         y_lu = houses[type][type_string.format(i)][3] - 100
         y_ld = houses[type][type_string.format(i)][7] + 100
@@ -183,14 +182,13 @@ class ConstructionSite(object):
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
         selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
-        print selection
         selection2 = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
         selection3 = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
 
         selection.update(selection1)
         selection.update(selection2)
         selection.update(selection3)
-        print selection
+
         vrijstand = 1000000
 
         currentHouse = houses[type][type_string.format(i)]
@@ -230,6 +228,7 @@ class ConstructionSite(object):
     # currentHouse = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
     # move 1m up
         # change coordinates
+        print i
         houses_up = houses
 
         houses_up[type][type_string.format(i)][3] = houses_up[type][type_string.format(i)][3] - 2
@@ -296,6 +295,7 @@ class ConstructionSite(object):
                     self.area[(y, houses_rght[type][type_string.format(i)][4] + 2)] == type
                     self.area[(y, houses_rght[type][type_string.format(i)][2])] == type
                     self.area[(y, houses_rght[type][type_string.format(i)][2] + 1)] == type
+                return houses_rght
 
             elif newfieldvalue == fieldvalue_lft:
                 for y in range(houses_lft[type][type_string.format(i)][3], houses_lft[type][type_string.format(i)][7]):
@@ -303,6 +303,7 @@ class ConstructionSite(object):
                     self.area[(y, houses_lft[type][type_string.format(i)][2] - 2)] == type
                     self.area[(y, houses_lft[type][type_string.format(i)][4])] == type
                     self.area[(y, houses_lft[type][type_string.format(i)][4] - 1)] == type
+                return houses_lft
 
             elif newfieldvalue == fieldvalue_dwn:
                 for x in range(houses_dwn[type][type_string.format(i)][2], houses_dwn[0][type_string.format(i)][4]):
@@ -310,12 +311,17 @@ class ConstructionSite(object):
                     self.area[(houses_dwn[type][type_string.format(i)][7] + 2, x)] = type
                     self.area[(houses_dwn[type][type_string.format(i)][3], x)] = 0
                     self.area[(houses_dwn[type][type_string.format(i)][3] + 1, x)] = 0
+                return houses_dwn
+
             else:
                 for x in range(houses_up[type][type_string.format(i)][2], houses_up[type][type_string.format(i)][4]):
                     self.area[(houses_up[type][type_string.format(i)][3] - 1, x)] = type
                     self.area[(houses_up[type][type_string.format(i)][3] - 2, x)] = type
                     self.area[(houses_up[type][type_string.format(i)][7], x)] = 0
                     self.area[(houses_up[type][type_string.format(i)][7] - 1, x)] = 0
+                return houses_up
+
+        return houses
 
     def totalValue(self, houses):
 
@@ -426,7 +432,7 @@ def initializeSimulation(mais, bung, egws, width, height):
     for i in range(bung):
         houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
     for i in range(egws):
-        houses = area.moveHouse(houses, "egws{0}", i, totalvalue, 2)
+        houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
 
 
     plt.imshow(area.area)
