@@ -173,7 +173,6 @@ class ConstructionSite(object):
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-
         x_lu = houses[type][type_string.format(i)][2] - 100
         x_ru = houses[type][type_string.format(i)][4] + 100
         y_lu = houses[type][type_string.format(i)][3] - 100
@@ -229,6 +228,7 @@ class ConstructionSite(object):
     # currentHouse = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
     # move 1m up
         # change coordinates
+
         print i
         houses_up = deepcopy(houses)
 
@@ -298,6 +298,7 @@ class ConstructionSite(object):
                     self.area[(y, houses_rght[type][type_string.format(i)][4] - 2)] = 0
                     self.area[(y, houses_rght[type][type_string.format(i)][2])] = type + 1
                     self.area[(y, houses_rght[type][type_string.format(i)][2] - 1)] = type + 1
+
                 return houses_rght
 
             elif newfieldvalue == fieldvalue_lft:
@@ -306,6 +307,7 @@ class ConstructionSite(object):
                     self.area[(y, houses_lft[type][type_string.format(i)][2] + 2)] = 0
                     self.area[(y, houses_lft[type][type_string.format(i)][4])] = type + 1
                     self.area[(y, houses_lft[type][type_string.format(i)][4] + 1)] = type + 1
+
                 return houses_lft
 
             elif newfieldvalue == fieldvalue_dwn:
@@ -430,7 +432,7 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     # calculate total value of area
     totalvalue = area.totalValue(houses)
-
+    print area.totalValue(houses)
 
     # move houses and return houses area with changed values
     for i in range(mais):
@@ -446,10 +448,10 @@ def initializeSimulation(mais, bung, egws, width, height):
         totalvalue = area.totalValue(houses)
         print totalvalue
 
-
     plt.imshow(area.area)
     plt.show()
 
+    print area.totalValue(houses)
     return area.totalValue(houses)
 
 #initializeSimulation(9, 15, 36, 300, 320)
