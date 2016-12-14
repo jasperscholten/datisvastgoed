@@ -512,8 +512,10 @@ def hillClimber(maxMoves, mais, bung, egws):
     print "INITIAL", totalvalue
 
     numberIterations = 0
-    # "something changed" and
-    while numberIterations <= maxMoves:
+    nothingChanged = 0
+
+    while nothingChanged <= 3 and numberIterations <= maxMoves:
+        oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
             houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
@@ -524,8 +526,12 @@ def hillClimber(maxMoves, mais, bung, egws):
         for i in range(egws):
             houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
             totalvalue = area.totalValue(houses)
+
         numberIterations += 1
         print numberIterations, totalvalue
+
+        if totalvalue == oldTotalvalue:
+            nothingChanged += 1
 
     print "FINAL", totalvalue
     plt.imshow(area.area)
