@@ -167,15 +167,56 @@ class ConstructionSite(object):
 
         return vrijstand
 
+    def getFilteredVrijstandSelection(self, houses, housename):
+        for i in range(3):
+            if housename in houses[i]:
+                currentHouse = houses[i][housename]
+
+                x_lu = currentHouse[2] - 100
+                x_ru = currentHouse[4] + 100
+                y_lu = currentHouse[3] - 100
+                y_ld = currentHouse[7] + 100
+
+
+                selection = {}
+                #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
+                selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+                selection2 = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+                selection3 = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+
+                selection.update(selection1)
+                selection.update(selection2)
+                selection.update(selection3)
+
+                vrijstand = 1000000
+
+                for house in selection:
+                    twoHouses = currentHouse, selection[house]
+
+                    currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+
+                    if 0 <= currentVrijstand < vrijstand:
+                        vrijstand = currentVrijstand
+
+                distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+                if distanceToWall/2.0 < vrijstand:
+                    vrijstand = distanceToWall/2.0
+
+                for i in range(2):
+                    if housename in houses[i]:
+                        houses[i][housename.format(i)][1] = vrijstand
+
+                return houses
+
     def getFilteredVrijstand(self, houses, type_string, i, type):
 
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-        x_lu = houses[type][type_string.format(i)][2] - 100
-        x_ru = houses[type][type_string.format(i)][4] + 100
-        y_lu = houses[type][type_string.format(i)][3] - 100
-        y_ld = houses[type][type_string.format(i)][7] + 100
+        x_lu = houses[type][type_string.format(i)][2] - 20
+        x_ru = houses[type][type_string.format(i)][4] + 20
+        y_lu = houses[type][type_string.format(i)][3] - 20
+        y_ld = houses[type][type_string.format(i)][7] + 20
 
 
         selection = {}
@@ -205,6 +246,10 @@ class ConstructionSite(object):
             vrijstand = distanceToWall/2.0
 
         houses[type][type_string.format(i)][1] = vrijstand
+
+        for house in selection:
+            houses = self.getFilteredVrijstandSelection(houses, house)
+
 
         return houses
 
