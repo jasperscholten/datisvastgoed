@@ -3,7 +3,6 @@ import random
 import math
 import matplotlib.pyplot as plt
 from copy import deepcopy
-#test
 
 class ConstructionSite(object):
     """
@@ -450,7 +449,7 @@ def initializeSimulation(mais, bung, egws, width, height):
     plt.imshow(area.area)
     plt.show()
 
-    return {'totalvalue':totalvalue, 'houses':houses}
+    return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
 
 #initializeSimulation(9, 15, 36, 300, 320)
 #initializeSimulation(6, 10, 24, 300, 320)
@@ -507,7 +506,7 @@ def hillClimber(maxMoves, mais, bung, egws):
     result = initializeSimulation(mais, bung, egws, 300, 320)
     houses = result['houses']
     totalvalue = result['totalvalue']
-    area = ConstructionSite(300, 320)
+    moves = ConstructionSite(300, 320)
 
     print "INITIAL", totalvalue
 
@@ -518,14 +517,14 @@ def hillClimber(maxMoves, mais, bung, egws):
         oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
-            houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
-            totalvalue = area.totalValue(houses)
+            houses = moves.moveHouse(houses, "maison{0}", i, totalvalue, 0)
+            totalvalue = moves.totalValue(houses)
         for i in range(bung):
-            houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
-            totalvalue = area.totalValue(houses)
+            houses = moves.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
+            totalvalue = moves.totalValue(houses)
         for i in range(egws):
-            houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
-            totalvalue = area.totalValue(houses)
+            houses = moves.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
+            totalvalue = moves.totalValue(houses)
 
         numberIterations += 1
         print numberIterations, totalvalue
@@ -534,8 +533,33 @@ def hillClimber(maxMoves, mais, bung, egws):
             nothingChanged += 1
 
     print "FINAL", totalvalue
-    plt.imshow(area.area)
+    plt.imshow(moves.area)
     plt.show()
+
+    finalArea = ConstructionSite(300, 320)
+
+    plt.imshow(finalArea.area)
+    plt.show()
+
+    for housetype in range(3):
+        for number in range(len(houses[housetype])):
+
+            if housetype == 2:
+                house = houses[housetype]["singlefamily{0}".format(number)]
+            elif housetype == 1:
+                house = houses[housetype]["bungalow{0}".format(number)]
+            else:
+                house = houses[housetype]["maison{0}".format(number)]
+
+            print housetype, number, "-", house
+            finalArea.buildWoning(house[2], house[4], house[3], house[6], (housetype + 1))
+
+    plt.imshow(finalArea.area)
+    plt.show()
+
+    #def buildWoning(self, x_start, x_end, y_start, y_end, type):
+    #2, 4, 3, 6
+    #['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
 '''Uncomment algorithm you want to execute'''
 # fill in how many times you want to execute this algorithm
