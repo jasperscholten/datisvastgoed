@@ -215,11 +215,11 @@ class ConstructionSite(object):
                     meter * beginwaarde
         '''
         global housevalue
-        if type == 1:
+        if type == 2:
             housevalue = 285000 + vrijstand * 0.03 * 285000
-        elif type == 2:
+        elif type == 1:
             housevalue = 399000 + vrijstand * 0.04 * 399000
-        elif type == 3:
+        elif type == 0:
             housevalue = 610000 + vrijstand * 0.06 * 610000
 
         return round(housevalue, 2)
@@ -420,15 +420,15 @@ def initializeSimulation(mais, bung, egws, width, height):
     # calculateVrijstand and calculateValue for maison
     for i in range(mais):
         houses[0]["maison{0}".format(i)][1] = area.getVrijstand(houses[0]["maison{0}".format(i)], houses)
-        houses[0]["maison{0}".format(i)][0] = area.calculateValue(3, houses[0]["maison{0}".format(i)][1])
+        houses[0]["maison{0}".format(i)][0] = area.calculateValue(0, houses[0]["maison{0}".format(i)][1])
 
     for i in range(bung):
         houses[1]["bungalow{0}".format(i)][1] = area.getVrijstand(houses[1]["bungalow{0}".format(i)], houses)
-        houses[1]["bungalow{0}".format(i)][0] = area.calculateValue(2, houses[1]["bungalow{0}".format(i)][1])
+        houses[1]["bungalow{0}".format(i)][0] = area.calculateValue(1, houses[1]["bungalow{0}".format(i)][1])
 
     for i in range(egws):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
-        houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(1, houses[2]["singlefamily{0}".format(i)][1])
+        houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
     # calculate total value of area
     totalvalue = area.totalValue(houses)
