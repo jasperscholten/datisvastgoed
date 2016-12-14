@@ -11,3 +11,46 @@ selection.update({k: v for k, v in houses[2].items() if v[2] > 250})
 print selection
 
 #print(houses[0]["maison{0}".format(j)])
+
+
+
+# meegeven: houses, type, type_string, firstIndex, i, step
+
+# move 1m to right
+    # change coordinates
+    housesCopy = deepcopy(houses)
+
+    housesCopy[type][type_string.format(i)][firstIndex] = houses_rght[type][type_string.format(i)][firstIndex] + step
+    houses_rght[type][type_string.format(i)][firstIndex + 2] = houses_rght[type][type_string.format(i)][firstIndex + 2] + step
+    houses_rght[type][type_string.format(i)][firstIndex + 4] = houses_rght[type][type_string.format(i)][firstIndex + 4] + step
+    houses_rght[type][type_string.format(i)][firstIndex + 6] = houses_rght[type][type_string.format(i)][firstIndex + 6] + step
+
+    housesCopy = self.getFilteredVrijstand(housesCopy, type_string, i, type)
+    housesCopy[type][type_string.format(i)][0] = self.calculateValue(type, housesCopy[type][type_string.format(i)][1])
+
+    return housesCopy
+
+
+    fieldvalue_rght = self.totalValue(houses_rght)
+
+    # pick highest value
+    newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
+
+
+
+
+
+
+houses_up = deepcopy(houses)
+
+houses_up[type][type_string.format(i)][3] = houses_up[type][type_string.format(i)][3] - 2
+houses_up[type][type_string.format(i)][5] = houses_up[type][type_string.format(i)][5] - 2
+houses_up[type][type_string.format(i)][7] = houses_up[type][type_string.format(i)][7] - 2
+houses_up[type][type_string.format(i)][9] = houses_up[type][type_string.format(i)][9] - 2
+
+#calcualte vrijstand and value
+# currentHouse_up[1] = area.getFilteredVrijstand(currentHouse_up, houses)
+houses_up = self.getFilteredVrijstand(houses_up, type_string, i, type)
+# currentHouse_up[0] = area.calculateValue(type, currentHouse_up[1])
+houses_up[type][type_string.format(i)][0] = self.calculateValue(type, houses_up[type][type_string.format(i)][1])
+fieldvalue_up = self.totalValue(houses_up)
