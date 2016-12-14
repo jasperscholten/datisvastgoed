@@ -294,34 +294,34 @@ class ConstructionSite(object):
 
             if newfieldvalue == fieldvalue_rght:
                 for y in range(houses_rght[type][type_string.format(i)][3], houses_rght[type][type_string.format(i)][7]):
-                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 1)] = type
-                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 2)] = type
-                    self.area[(y, houses_rght[type][type_string.format(i)][2])] = 0
-                    self.area[(y, houses_rght[type][type_string.format(i)][2] + 1)] = 0
+                    self.area[(y, houses_rght[type][type_string.format(i)][4] - 1)] = 0
+                    self.area[(y, houses_rght[type][type_string.format(i)][4] - 2)] = 0
+                    self.area[(y, houses_rght[type][type_string.format(i)][2])] = type + 1
+                    self.area[(y, houses_rght[type][type_string.format(i)][2] - 1)] = type + 1
                 return houses_rght
 
             elif newfieldvalue == fieldvalue_lft:
                 for y in range(houses_lft[type][type_string.format(i)][3], houses_lft[type][type_string.format(i)][7]):
-                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 1)] = type
-                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 2)] = type
-                    self.area[(y, houses_lft[type][type_string.format(i)][4])] = 0
-                    self.area[(y, houses_lft[type][type_string.format(i)][4] - 1)] = 0
+                    self.area[(y, houses_lft[type][type_string.format(i)][2] + 1)] = 0
+                    self.area[(y, houses_lft[type][type_string.format(i)][2] + 2)] = 0
+                    self.area[(y, houses_lft[type][type_string.format(i)][4])] = type + 1
+                    self.area[(y, houses_lft[type][type_string.format(i)][4] + 1)] = type + 1
                 return houses_lft
 
             elif newfieldvalue == fieldvalue_dwn:
                 for x in range(houses_dwn[type][type_string.format(i)][2], houses_dwn[type][type_string.format(i)][4]):
-                    self.area[(houses_dwn[type][type_string.format(i)][7] + 1, x)] = type
-                    self.area[(houses_dwn[type][type_string.format(i)][7] + 2, x)] = type
-                    self.area[(houses_dwn[type][type_string.format(i)][3], x)] = 0
-                    self.area[(houses_dwn[type][type_string.format(i)][3] + 1, x)] = 0
+                    self.area[(houses_dwn[type][type_string.format(i)][7] - 1, x)] = 0
+                    self.area[(houses_dwn[type][type_string.format(i)][7] - 2, x)] = 0
+                    self.area[(houses_dwn[type][type_string.format(i)][3], x)] = type + 1
+                    self.area[(houses_dwn[type][type_string.format(i)][3] - 1, x)] = type + 1
                 return houses_dwn
 
             else:
                 for x in range(houses_up[type][type_string.format(i)][2], houses_up[type][type_string.format(i)][4]):
-                    self.area[(houses_up[type][type_string.format(i)][3] - 1, x)] = type
-                    self.area[(houses_up[type][type_string.format(i)][3] - 2, x)] = type
-                    self.area[(houses_up[type][type_string.format(i)][7], x)] = 0
-                    self.area[(houses_up[type][type_string.format(i)][7] - 1, x)] = 0
+                    self.area[(houses_up[type][type_string.format(i)][3] + 1, x)] = 0
+                    self.area[(houses_up[type][type_string.format(i)][3] + 2, x)] = 0
+                    self.area[(houses_up[type][type_string.format(i)][7], x)] = type + 1
+                    self.area[(houses_up[type][type_string.format(i)][7] + 1, x)] = type + 1
                 return houses_up
         else:
             print self.totalValue(houses)
@@ -388,7 +388,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_pos = random.randint(0 + 12, height - 21 - 12)
         if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21) == True:
             area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
-            area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 3)
+            area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 1)
             houses[0]["maison{0}".format(counter)] = area.savePositions(x_pos, y_pos, 22, 21)
             counter += 1
 
@@ -411,7 +411,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_pos = random.randint(0 + 4, height - 16 - 4)
         if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16) == True:
             area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
-            area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 1)
+            area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 3)
             houses[2]["singlefamily{0}".format(counter)] = area.savePositions(x_pos, y_pos, 16, 16)
             counter += 1
 
