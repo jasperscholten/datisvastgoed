@@ -229,7 +229,7 @@ class ConstructionSite(object):
     # move 1m up
         # change coordinates
 
-        print i
+        #print i
         houses_up = deepcopy(houses)
 
         houses_up[type][type_string.format(i)][3] = houses_up[type][type_string.format(i)][3] - 2
@@ -326,7 +326,7 @@ class ConstructionSite(object):
                     self.area[(houses_up[type][type_string.format(i)][7] + 1, x)] = type + 1
                 return houses_up
         else:
-            print self.totalValue(houses)
+            #print self.totalValue(houses)
             return houses
 
 
@@ -432,9 +432,8 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     # calculate total value of area
     totalvalue = area.totalValue(houses)
-    print area.totalValue(houses)
 
-    # move houses and return houses area with changed values
+    """# move houses and return houses area with changed values
     for i in range(mais):
         houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
         totalvalue = area.totalValue(houses)
@@ -446,13 +445,12 @@ def initializeSimulation(mais, bung, egws, width, height):
     for i in range(egws):
         houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
         totalvalue = area.totalValue(houses)
-        print totalvalue
+        print totalvalue"""
 
     plt.imshow(area.area)
     plt.show()
 
-    print area.totalValue(houses)
-    return area.totalValue(houses)
+    return {'totalvalue':totalvalue, 'houses':houses}
 
 #initializeSimulation(9, 15, 36, 300, 320)
 #initializeSimulation(6, 10, 24, 300, 320)
@@ -466,11 +464,11 @@ def randomAlgorithm(runs):
 
     for i in range(runs):
         print "60 variant"
-        value60.append(initializeSimulation(9, 15, 36, 300, 320))
+        value60.append(initializeSimulation(9, 15, 36, 300, 320)['totalvalue'])
         print "40 variant"
-        value40.append(initializeSimulation(6, 10, 24, 300, 320))
+        value40.append(initializeSimulation(6, 10, 24, 300, 320)['totalvalue'])
         print "20 variant"
-        value20.append(initializeSimulation(3, 5, 12, 300, 320))
+        value20.append(initializeSimulation(3, 5, 12, 300, 320)['totalvalue'])
         print i
 
     print "Average total value 20:", sum(value20)/float(len(value20))
@@ -504,4 +502,38 @@ def randomAlgorithm(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-randomAlgorithm(1)
+def hillClimber(maxMoves, mais, bung, egws):
+
+    result = initializeSimulation(mais, bung, egws, 300, 320)
+    houses = result['houses']
+    totalvalue = result['totalvalue']
+    area = ConstructionSite(300, 320)
+
+    print "INITIAL", totalvalue
+
+    numberIterations = 0
+    # "something changed" and
+    while numberIterations <= maxMoves:
+        # move houses and return houses area with changed values
+        for i in range(mais):
+            houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
+            totalvalue = area.totalValue(houses)
+        for i in range(bung):
+            houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
+            totalvalue = area.totalValue(houses)
+        for i in range(egws):
+            houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
+            totalvalue = area.totalValue(houses)
+        numberIterations += 1
+        print numberIterations, totalvalue
+
+    print "FINAL", totalvalue
+    plt.imshow(area.area)
+    plt.show()
+
+'''Uncomment algorithm you want to execute'''
+# fill in how many times you want to execute this algorithm
+#randomAlgorithm(1)
+
+# 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+hillClimber(50, 9, 15, 36)
