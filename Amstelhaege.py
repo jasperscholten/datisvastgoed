@@ -552,7 +552,7 @@ def hillClimber(maxMoves, mais, bung, egws):
                 house = houses[housetype]["maison{0}".format(number)]
 
             print housetype, number, "-", house
-            finalArea.buildWoning(house[2], house[4], house[3], house[6], (housetype + 1))
+            finalArea.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
 
     plt.imshow(finalArea.area)
     plt.show()
