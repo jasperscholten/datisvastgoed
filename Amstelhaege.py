@@ -177,7 +177,6 @@ class ConstructionSite(object):
                 y_lu = currentHouse[3] - 100
                 y_ld = currentHouse[7] + 100
 
-
                 selection = {}
                 #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
                 selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
@@ -578,13 +577,14 @@ def hillClimber(maxMoves, mais, bung, egws):
             nothingChanged += 1
 
     print "FINAL", totalvalue
-    plt.imshow(moves.area)
-    plt.show()
+    #plt.imshow(moves.area)
+    #plt.show()
 
     finalArea = ConstructionSite(300, 320)
 
-    plt.imshow(finalArea.area)
-    plt.show()
+    for water in range(len(houses[3])):
+        waterPiece = houses[3]["water{0}".format(water)]
+        finalArea.buildWater(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
 
     for housetype in range(3):
         for number in range(len(houses[housetype])):
@@ -596,15 +596,10 @@ def hillClimber(maxMoves, mais, bung, egws):
             else:
                 house = houses[housetype]["maison{0}".format(number)]
 
-            print housetype, number, "-", house
             finalArea.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
 
     plt.imshow(finalArea.area)
     plt.show()
-
-    #def buildWoning(self, x_start, x_end, y_start, y_end, type):
-    #2, 4, 3, 6
-    #['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
 '''Uncomment algorithm you want to execute'''
 # fill in how many times you want to execute this algorithm
