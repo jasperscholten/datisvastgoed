@@ -162,7 +162,7 @@ class ConstructionSite(object):
 
         # bereken of afstand tot muur kleiner is.
         distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
-        if distanceToWall < vrijstand:
+        if distanceToWall/2.0 < vrijstand:
             #gedeeld door 2 vanwege blokken van 0.5 meter
             vrijstand = distanceToWall/2.0
 
@@ -202,7 +202,7 @@ class ConstructionSite(object):
                 vrijstand = currentVrijstand
 
         distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
-        if distanceToWall < vrijstand:
+        if distanceToWall/2.0 < vrijstand:
             vrijstand = distanceToWall/2.0
 
         houses[type][type_string.format(i)][1] = vrijstand
@@ -514,7 +514,7 @@ def hillClimber(maxMoves, mais, bung, egws):
     numberIterations = 0
     nothingChanged = 0
 
-    while nothingChanged <= 3 and numberIterations <= maxMoves:
+    while nothingChanged == 0 and numberIterations <= maxMoves:
         oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
