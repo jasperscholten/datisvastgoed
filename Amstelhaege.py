@@ -2,6 +2,7 @@ import numpy
 import random
 import math
 import matplotlib.pyplot as plt
+from copy import deepcopy
 #test
 
 class ConstructionSite(object):
@@ -229,7 +230,7 @@ class ConstructionSite(object):
     # move 1m up
         # change coordinates
         print i
-        houses_up = houses
+        houses_up = deepcopy(houses)
 
         houses_up[type][type_string.format(i)][3] = houses_up[type][type_string.format(i)][3] - 2
         houses_up[type][type_string.format(i)][5] = houses_up[type][type_string.format(i)][5] - 2
@@ -245,7 +246,7 @@ class ConstructionSite(object):
 
     # move 1m down
         # change coordinates
-        houses_dwn = houses
+        houses_dwn = deepcopy(houses)
 
         houses_dwn[type][type_string.format(i)][3] = houses_dwn[type][type_string.format(i)][3] + 2
         houses_dwn[type][type_string.format(i)][5] = houses_dwn[type][type_string.format(i)][5] + 2
@@ -259,7 +260,7 @@ class ConstructionSite(object):
 
     # move 1m to left
         # change coordinates
-        houses_lft = houses
+        houses_lft = deepcopy(houses)
 
         houses_lft[type][type_string.format(i)][2] = houses_lft[type][type_string.format(i)][2] - 2
         houses_lft[type][type_string.format(i)][4] = houses_lft[type][type_string.format(i)][4] - 2
@@ -273,7 +274,7 @@ class ConstructionSite(object):
 
     # move 1m to right
         # change coordinates
-        houses_rght = houses
+        houses_rght = deepcopy(houses)
 
         houses_rght[type][type_string.format(i)][2] = houses_rght[type][type_string.format(i)][2] + 2
         houses_rght[type][type_string.format(i)][4] = houses_rght[type][type_string.format(i)][4] + 2
@@ -288,25 +289,27 @@ class ConstructionSite(object):
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
 
+
         if newfieldvalue > fieldvalue:
+
             if newfieldvalue == fieldvalue_rght:
                 for y in range(houses_rght[type][type_string.format(i)][3], houses_rght[type][type_string.format(i)][7]):
-                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 1)] == type
-                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 2)] == type
-                    self.area[(y, houses_rght[type][type_string.format(i)][2])] == type
-                    self.area[(y, houses_rght[type][type_string.format(i)][2] + 1)] == type
+                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 1)] = type
+                    self.area[(y, houses_rght[type][type_string.format(i)][4] + 2)] = type
+                    self.area[(y, houses_rght[type][type_string.format(i)][2])] = 0
+                    self.area[(y, houses_rght[type][type_string.format(i)][2] + 1)] = 0
                 return houses_rght
 
             elif newfieldvalue == fieldvalue_lft:
                 for y in range(houses_lft[type][type_string.format(i)][3], houses_lft[type][type_string.format(i)][7]):
-                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 1)] == type
-                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 2)] == type
-                    self.area[(y, houses_lft[type][type_string.format(i)][4])] == type
-                    self.area[(y, houses_lft[type][type_string.format(i)][4] - 1)] == type
+                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 1)] = type
+                    self.area[(y, houses_lft[type][type_string.format(i)][2] - 2)] = type
+                    self.area[(y, houses_lft[type][type_string.format(i)][4])] = 0
+                    self.area[(y, houses_lft[type][type_string.format(i)][4] - 1)] = 0
                 return houses_lft
 
             elif newfieldvalue == fieldvalue_dwn:
-                for x in range(houses_dwn[type][type_string.format(i)][2], houses_dwn[0][type_string.format(i)][4]):
+                for x in range(houses_dwn[type][type_string.format(i)][2], houses_dwn[type][type_string.format(i)][4]):
                     self.area[(houses_dwn[type][type_string.format(i)][7] + 1, x)] = type
                     self.area[(houses_dwn[type][type_string.format(i)][7] + 2, x)] = type
                     self.area[(houses_dwn[type][type_string.format(i)][3], x)] = 0
@@ -320,8 +323,11 @@ class ConstructionSite(object):
                     self.area[(houses_up[type][type_string.format(i)][7], x)] = 0
                     self.area[(houses_up[type][type_string.format(i)][7] - 1, x)] = 0
                 return houses_up
+        else:
+            print self.totalValue(houses)
+            return houses
 
-        return houses
+
 
     def totalValue(self, houses):
 
@@ -429,10 +435,16 @@ def initializeSimulation(mais, bung, egws, width, height):
     # move houses and return houses area with changed values
     for i in range(mais):
         houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
+        totalvalue = area.totalValue(houses)
+        print totalvalue
     for i in range(bung):
         houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
+        totalvalue = area.totalValue(houses)
+        print totalvalue
     for i in range(egws):
         houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
+        totalvalue = area.totalValue(houses)
+        print totalvalue
 
 
     plt.imshow(area.area)
@@ -451,8 +463,11 @@ def randomAlgorithm(runs):
     value20 = []
 
     for i in range(runs):
+        print "60 variant"
         value60.append(initializeSimulation(9, 15, 36, 300, 320))
+        print "40 variant"
         value40.append(initializeSimulation(6, 10, 24, 300, 320))
+        print "20 variant"
         value20.append(initializeSimulation(3, 5, 12, 300, 320))
         print i
 
