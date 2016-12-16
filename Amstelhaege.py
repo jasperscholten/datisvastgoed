@@ -321,7 +321,7 @@ class ConstructionSite(object):
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
 
-        if newfieldvalue > fieldvalue:
+        if newfieldvalue >= fieldvalue:
 
             if newfieldvalue == fieldvalue_rght:
                 for y in range(houses_rght[type][type_string.format(i)][3], houses_rght[type][type_string.format(i)][7]):
@@ -526,7 +526,7 @@ def hillClimber(maxMoves, mais, bung, egws):
     numberIterations = 0
     nothingChanged = 0
 
-    while nothingChanged == 0 and numberIterations <= maxMoves:
+    while nothingChanged < 20 and numberIterations <= maxMoves:
         oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
