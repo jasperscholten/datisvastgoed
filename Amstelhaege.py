@@ -255,11 +255,11 @@ class ConstructionSite(object):
         '''
         global housevalue
         if type == 2:
-            housevalue = 285000 + vrijstand * 0.03 * 285000
+            housevalue = 285000 + (vrijstand - 2) * 0.03 * 285000
         elif type == 1:
-            housevalue = 399000 + vrijstand * 0.04 * 399000
+            housevalue = 399000 + (vrijstand - 3) * 0.04 * 399000
         elif type == 0:
-            housevalue = 610000 + vrijstand * 0.06 * 610000
+            housevalue = 610000 + (vrijstand - 6) * 0.06 * 610000
 
         return round(housevalue, 2)
 
@@ -318,7 +318,11 @@ class ConstructionSite(object):
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
 
         if newfieldvalue >= fieldvalue:
-            if newfieldvalue == fieldvalue_rght:
+            if newfieldvalue == fieldvalue_rght and newfieldvalue == fieldvalue_lft:
+                return random.choice([houses_rght, houses_lft])
+            elif newfieldvalue == fieldvalue_up and newfieldvalue == fieldvalue_dwn:
+                return random.choice([houses_up, houses_dwn])
+            elif newfieldvalue == fieldvalue_rght:
                 return houses_rght
             elif newfieldvalue == fieldvalue_lft:
                 return houses_lft
