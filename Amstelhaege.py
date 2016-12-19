@@ -342,19 +342,17 @@ class ConstructionSite(object):
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
 
+        houselist = []
         if newfieldvalue >= fieldvalue:
-            if newfieldvalue == fieldvalue_rght and newfieldvalue == fieldvalue_lft:
-                return random.choice([houses_rght, houses_lft])
-            elif newfieldvalue == fieldvalue_up and newfieldvalue == fieldvalue_dwn:
-                return random.choice([houses_up, houses_dwn])
-            elif newfieldvalue == fieldvalue_rght:
-                return houses_rght
+            if newfieldvalue == fieldvalue_rght:
+                houselist.append(houses_rght)
             elif newfieldvalue == fieldvalue_lft:
-                return houses_lft
+                houselist.append(houses_lft)
             elif newfieldvalue == fieldvalue_dwn:
-                return houses_dwn
+                houselist.append(houses_dwn)
             else:
-                return houses_up
+                houselist.append(houses_up)
+            return random.choice(houselist)
         else:
             return houses
 
@@ -523,6 +521,8 @@ def hillClimber(maxMoves, mais, bung, egws):
 
         if totalvalue == oldTotalvalue:
             nothingChanged += 1
+        else:
+            nothingChanged = 0
 
     print "FINAL", totalvalue
     #plt.imshow(moves.area)
@@ -560,4 +560,4 @@ def hillClimber(maxMoves, mais, bung, egws):
 #randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(50, 9, 15, 36)
+hillClimber(200, 9, 15, 36)
