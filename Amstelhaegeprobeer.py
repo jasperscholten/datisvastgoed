@@ -135,7 +135,7 @@ class ConstructionSite(object):
 
         return distance
 
-    def getVrijstand(self, currentHouse, houses):
+    def getVrijstand(self, currentHouse, houses, type):
 
         vrijstand = 1000000
 
@@ -162,6 +162,13 @@ class ConstructionSite(object):
         if distanceToWall/2.0 < vrijstand:
             #gedeeld door 2 vanwege blokken van 0.5 meter
             vrijstand = distanceToWall/2.0
+
+        if type == 0 and vrijstand < 6:
+            return "invalid move"
+        if type == 1 and vrijstand < 3:
+            return "invalid move"
+        if type == 2 and vrijstand < 2:
+            return "invalid move"
 
         return vrijstand
 
@@ -203,12 +210,7 @@ class ConstructionSite(object):
         if distanceToWall/2.0 < vrijstand:
             vrijstand = distanceToWall/2.0
 
-        if type == 0 and vrijstand < 6:
-            return "invalid move"
-        if type == 1 and vrijstand < 3:
-            return "invalid move"
-        if type == 2 and vrijstand < 2:
-            return "invalid move"
+
 
         housesCopy[type][type_string.format(i)][1] = vrijstand
 
@@ -305,11 +307,27 @@ class ConstructionSite(object):
             housesCopy[type][type_string.format(i)][firstIndex + 4] = housesCopy[type][type_string.format(i)][firstIndex + 4] + step
             housesCopy[type][type_string.format(i)][firstIndex + 6] = housesCopy[type][type_string.format(i)][firstIndex + 6] + step
 
-            housesCopy = self.getFilteredVrijstand(housesCopy, type_string, i, type)
-            if housesCopy == "invalid move":
-                return "invalid move"
-            else:
-                housesCopy[type][type_string.format(i)][0] = self.calculateValue(type, housesCopy[type][type_string.format(i)][1])
+            for i in range(9):
+                housesCopy[0]["maison{0}".format(i)][1] = self.getVrijstand(housesCopy[0]["maison{0}".format(i)], housesCopy, 0)
+                if housesCopy[0]["maison{0}".format(i)][1] == "invalid move":
+                    print "invalid move"
+                    return "invalid move"
+                housesCopy[0]["maison{0}".format(i)][0] = self.calculateValue(0, housesCopy[0]["maison{0}".format(i)][1])
+
+            for i in range(15):
+                housesCopy[1]["bungalow{0}".format(i)][1] = self.getVrijstand(housesCopy[1]["bungalow{0}".format(i)], housesCopy, 1)
+                if housesCopy[1]["bungalow{0}".format(i)][1] == "invalid move":
+                    print "invalid move"
+                    return "invalid move"
+                housesCopy[1]["bungalow{0}".format(i)][0] = self.calculateValue(1, housesCopy[1]["bungalow{0}".format(i)][1])
+
+            for i in range(36):
+                housesCopy[2]["singlefamily{0}".format(i)][1] = self.getVrijstand(housesCopy[2]["singlefamily{0}".format(i)], housesCopy, 2)
+                if housesCopy[2]["singlefamily{0}".format(i)][1] == "invalid move":
+                    print "invalid move"
+                    return "invalid move"
+                housesCopy[2]["singlefamily{0}".format(i)][0] = self.calculateValue(2, housesCopy[2]["singlefamily{0}".format(i)][1])
+
             return housesCopy
 
     '''
@@ -434,15 +452,15 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     # calculateVrijstand and calculateValue for maison
     for i in range(mais):
-        houses[0]["maison{0}".format(i)][1] = area.getVrijstand(houses[0]["maison{0}".format(i)], houses)
+        houses[0]["maison{0}".format(i)][1] = area.getVrijstand(houses[0]["maison{0}".format(i)], houses, 0)
         houses[0]["maison{0}".format(i)][0] = area.calculateValue(0, houses[0]["maison{0}".format(i)][1])
 
     for i in range(bung):
-        houses[1]["bungalow{0}".format(i)][1] = area.getVrijstand(houses[1]["bungalow{0}".format(i)], houses)
+        houses[1]["bungalow{0}".format(i)][1] = area.getVrijstand(houses[1]["bungalow{0}".format(i)], houses, 1)
         houses[1]["bungalow{0}".format(i)][0] = area.calculateValue(1, houses[1]["bungalow{0}".format(i)][1])
 
     for i in range(egws):
-        houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
+        houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses, 2)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
     # calculate total value of area
