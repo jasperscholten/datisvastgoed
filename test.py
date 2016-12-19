@@ -38,6 +38,42 @@ print selection
 
 
 
+# meegeven: house (bv. houses_rght)
+
+if newfieldvalue == fieldvalue_rght:
+
+    for y in range(house[type][type_string.format(i)][3], house[type][type_string.format(i)][7]):
+        self.area[(y, house[type][type_string.format(i)][4] - 1)] = 0
+        self.area[(y, house[type][type_string.format(i)][4] - 2)] = 0
+        self.area[(y, house[type][type_string.format(i)][2])] = type + 1
+        self.area[(y, house[type][type_string.format(i)][2] - 1)] = type + 1
+
+    return house
+
+elif newfieldvalue == fieldvalue_lft:
+    for y in range(houses_lft[type][type_string.format(i)][3], houses_lft[type][type_string.format(i)][7]):
+        self.area[(y, houses_lft[type][type_string.format(i)][2] + 1)] = 0
+        self.area[(y, houses_lft[type][type_string.format(i)][2] + 2)] = 0
+        self.area[(y, houses_lft[type][type_string.format(i)][4])] = type + 1
+        self.area[(y, houses_lft[type][type_string.format(i)][4] + 1)] = type + 1
+
+    return houses_lft
+
+elif newfieldvalue == fieldvalue_dwn:
+    for x in range(houses_dwn[type][type_string.format(i)][2], houses_dwn[type][type_string.format(i)][4]):
+        self.area[(houses_dwn[type][type_string.format(i)][7] - 1, x)] = 0
+        self.area[(houses_dwn[type][type_string.format(i)][7] - 2, x)] = 0
+        self.area[(houses_dwn[type][type_string.format(i)][3], x)] = type + 1
+        self.area[(houses_dwn[type][type_string.format(i)][3] - 1, x)] = type + 1
+    return houses_dwn
+
+else:
+    for x in range(houses_up[type][type_string.format(i)][2], houses_up[type][type_string.format(i)][4]):
+        self.area[(houses_up[type][type_string.format(i)][3] + 1, x)] = 0
+        self.area[(houses_up[type][type_string.format(i)][3] + 2, x)] = 0
+        self.area[(houses_up[type][type_string.format(i)][7], x)] = type + 1
+        self.area[(houses_up[type][type_string.format(i)][7] + 1, x)] = type + 1
+    return houses_up
 
 
 
