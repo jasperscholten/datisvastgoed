@@ -91,8 +91,6 @@ class ConstructionSite(object):
         else:
             return False
 
-    distance = 0
-
     # huis 1: ax, ay - huis 2: bx, by
     def pythagoras(self, ax, ay, bx, by):
         length = abs(ax - bx)
@@ -177,7 +175,6 @@ class ConstructionSite(object):
         y_lu = houses[type][type_string.format(i)][3] - 20
         y_ld = houses[type][type_string.format(i)][7] + 20
 
-
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
         selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
@@ -208,7 +205,6 @@ class ConstructionSite(object):
 
         for house in selection:
             houses = self.getFilteredVrijstandSelection(houses, house)
-
 
         return houses
 
@@ -380,7 +376,6 @@ def initializeSimulation(mais, bung, egws, width, height):
             houses[0]["maison{0}".format(counter)] = area.savePositions(x_pos, y_pos, 22, 21)
             counter += 1
 
-
     # build right amount of bungalows
     counter = 0
     while counter < bung:
@@ -419,29 +414,10 @@ def initializeSimulation(mais, bung, egws, width, height):
     # calculate total value of area
     totalvalue = area.totalValue(houses)
 
-    """# move houses and return houses area with changed values
-    for i in range(mais):
-        houses = area.moveHouse(houses, "maison{0}", i, totalvalue, 0)
-        totalvalue = area.totalValue(houses)
-        print totalvalue
-    for i in range(bung):
-        houses = area.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
-        totalvalue = area.totalValue(houses)
-        print totalvalue
-    for i in range(egws):
-        houses = area.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
-        totalvalue = area.totalValue(houses)
-        print totalvalue"""
-
     plt.imshow(area.area)
     plt.show()
 
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
-
-#initializeSimulation(9, 15, 36, 300, 320)
-#initializeSimulation(6, 10, 24, 300, 320)
-#initializeSimulation(3, 5, 12, 300, 320)
-#initializeSimulation(2, 1, 1, 300, 320)
 
 def randomAlgorithm(runs):
     value60 = []
@@ -545,6 +521,12 @@ def hillClimber(maxMoves, mais, bung, egws):
     plt.show()
 
 '''Uncomment algorithm you want to execute'''
+# Initialize random configuration
+#initializeSimulation(9, 15, 36, 300, 320)
+#initializeSimulation(6, 10, 24, 300, 320)
+#initializeSimulation(3, 5, 12, 300, 320)
+#initializeSimulation(2, 1, 1, 300, 320)
+
 # fill in how many times you want to execute this algorithm
 #randomAlgorithm(1)
 
