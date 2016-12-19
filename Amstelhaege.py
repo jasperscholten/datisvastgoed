@@ -203,6 +203,13 @@ class ConstructionSite(object):
 
         houses[type][type_string.format(i)][1] = vrijstand
 
+        if type == 0 and vrijstand < 6:
+            return "invalid move"
+        if type == 1 and vrijstand < 3:
+            return "invalid move"
+        if type == 2 and vrijstand < 2:
+            return "invalid move"
+
         for house in selection:
             houses = self.getFilteredVrijstandSelection(houses, house)
 
@@ -288,8 +295,10 @@ class ConstructionSite(object):
             housesCopy[type][type_string.format(i)][firstIndex + 6] = housesCopy[type][type_string.format(i)][firstIndex + 6] + step
 
             housesCopy = self.getFilteredVrijstand(housesCopy, type_string, i, type)
-            housesCopy[type][type_string.format(i)][0] = self.calculateValue(type, housesCopy[type][type_string.format(i)][1])
-
+            if housesCopy == "invalid move":
+                return "invalid move"
+            else:
+                housesCopy[type][type_string.format(i)][0] = self.calculateValue(type, housesCopy[type][type_string.format(i)][1])
             return housesCopy
 
     '''
@@ -300,19 +309,35 @@ class ConstructionSite(object):
 
     # move 1m up
         houses_up = self.calculateProvisionalValue(houses, type, type_string, 3, i, -2)
-        fieldvalue_up = self.totalValue(houses_up)
+        if houses_up == "invalid move":
+            print "invalid move"
+            fieldvalue_up = 0
+        else:
+            fieldvalue_up = self.totalValue(houses_up)
 
     # move 1m down
         houses_dwn = self.calculateProvisionalValue(houses, type, type_string, 3, i, 2)
-        fieldvalue_dwn = self.totalValue(houses_dwn)
+        if houses_dwn == "invalid move":
+            print "invalid move"
+            fieldvalue_dwn = 0
+        else:
+            fieldvalue_dwn = self.totalValue(houses_dwn)
 
     # move 1m to left
         houses_lft = self.calculateProvisionalValue(houses, type, type_string, 2, i, -2)
-        fieldvalue_lft = self.totalValue(houses_lft)
+        if houses_lft == "invalid move":
+            print "invalid move"
+            fieldvalue_lft = 0
+        else:
+            fieldvalue_lft = self.totalValue(houses_lft)
 
     # move 1m to right
         houses_rght = self.calculateProvisionalValue(houses, type, type_string, 2, i, 2)
-        fieldvalue_rght = self.totalValue(houses_rght)
+        if houses_rght == "invalid move":
+            print "invalid move"
+            fieldvalue_rght = 0
+        else:
+            fieldvalue_rght = self.totalValue(houses_rght)
 
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
