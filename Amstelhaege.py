@@ -171,19 +171,11 @@ class ConstructionSite(object):
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-<<<<<<< HEAD
         x_lu = houses[type][type_string.format(i)][2] - 100
         x_ru = houses[type][type_string.format(i)][4] + 100
         y_lu = houses[type][type_string.format(i)][3] - 100
         y_ld = houses[type][type_string.format(i)][7] + 100
-=======
-        housesCopy = deepcopy(houses)
 
-        x_lu = housesCopy[type][type_string.format(i)][2] - 100
-        x_ru = housesCopy[type][type_string.format(i)][4] + 100
-        y_lu = housesCopy[type][type_string.format(i)][3] - 100
-        y_ld = housesCopy[type][type_string.format(i)][7] + 100
->>>>>>> origin/master
 
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
