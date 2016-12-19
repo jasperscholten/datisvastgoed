@@ -1,0 +1,501 @@
+import numpy
+import random
+import math
+import collections
+import matplotlib.pyplot as plt
+from copy import deepcopy
+
+class ConstructionSite(object):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.area = numpy.zeros((height, width), dtype='int32')
+
+    def buildVrijstand(self, x_start, x_end, y_start, y_end, std_vrijstand):
+        for x in range(x_start - std_vrijstand, x_end + std_vrijstand):
+            for y in range(y_start - std_vrijstand, y_end + std_vrijstand):
+                self.area[(y, x)] = 4
+
+    def buildWoning(self, x_start, x_end, y_start, y_end, type):
+        for x in range(x_start, x_end):
+            for y in range(y_start, y_end):
+                self.area[(y, x)] = type
+
+    def buildWater(self, x_start, x_end, y_start, y_end, water):
+        for x in range(x_start, x_end):
+            for y in range(y_start, y_end):
+                self.area[(y, x)] = 5
+
+    def checkIfPossible(self, x_start, x_end, y_start, y_end):
+        for x in range(x_start, x_end):
+            for y in range(y_start, y_end):
+                if self.area[(y, x)] != 0:
+                    return False
+        return True
+
+    def createVariables(self, waterPieces, mais, bung, egws):
+        water = dict()
+        maison = dict()
+        bungalow = dict()
+        singlefam = dict()
+
+        for i in range(waterPieces):
+            water["water{0}".format(i)] = ['x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
+        for i in range(mais):
+            maison["maison{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
+        for i in range(bung):
+            bungalow["bungalow{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
+        for i in range(egws):
+            singlefam["singlefamily{0}".format(i)] = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
+        return maison, bungalow, singlefam, water
+
+    def savePositions(self, x_pos, y_pos, length, width):
+        positions = ['value', 'vrijstand', x_pos, y_pos, x_pos + length, y_pos, x_pos, y_pos + width, x_pos + length, y_pos + width]
+        return positions
+
+    def betweenCorners(self, a, b, c, d):
+        if (a >= c and a <= d) or (b >= c and b <= d) or (c >= a and c <= b) or (d >= a and d <= b):
+            return True
+        else:
+            return False
+
+    def pythagoras(self, ax, ay, bx, by):
+        length = abs(ax - bx)
+        width = abs(ay - by)
+        return math.sqrt(length**2 + width**2)
+
+    def calculateVrijstand(self, houses):
+
+        if houses[0][3] >= houses[1][7]:
+            if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
+                distance = houses[0][3] - houses[1][7]
+            else:
+                distance = min(self.pythagoras(houses[0][2], houses[0][3], houses[1][8], houses[1][9]), self.pythagoras(houses[0][4], houses[0][5], houses[1][6], houses[1][7]))
+        elif houses[0][7] <= houses[1][3]:
+            if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
+                distance = houses[1][3] - houses[0][7]
+            else:
+                distance = min(self.pythagoras(houses[0][6], houses[0][7], houses[1][4], houses[1][5]), self.pythagoras(houses[0][8], houses[0][9], houses[1][2], houses[1][3]))
+        else:
+            if houses[0][2] >= houses[1][4]:
+                distance = houses[0][2] - houses[1][4]
+            else:
+                distance = houses[1][2] - houses[0][4]
+        return distance
+
+    def getVrijstand(self, currentHouse, houses):
+        vrijstand = 1000000
+
+        for housetype in range(3):
+            for number in range(len(houses[housetype])):
+                if housetype == 2:
+                    twoHouses = currentHouse, houses[housetype]["singlefamily{0}".format(number)]
+                elif housetype == 1:
+                    twoHouses = currentHouse, houses[housetype]["bungalow{0}".format(number)]
+                else:
+                    twoHouses = currentHouse, houses[housetype]["maison{0}".format(number)]
+
+                currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+                if 0 <= currentVrijstand < vrijstand:
+                    vrijstand = currentVrijstand
+
+        distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+        if distanceToWall/2.0 < vrijstand:
+            vrijstand = distanceToWall/2.0
+        return vrijstand
+
+    def getFilteredVrijstand(self, houses, type_string, i, type):
+        housesCopy = deepcopy(houses)
+
+        x_lu = housesCopy[type][type_string.format(i)][2] - 20
+        x_ru = housesCopy[type][type_string.format(i)][4] + 20
+        y_lu = housesCopy[type][type_string.format(i)][3] - 20
+        y_ld = housesCopy[type][type_string.format(i)][7] + 20
+
+        selection = {}
+        #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
+        selection1 = {k: v for k, v in housesCopy[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection2 = {k: v for k, v in housesCopy[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection3 = {k: v for k, v in housesCopy[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+
+        selection.update(selection1)
+        selection.update(selection2)
+        selection.update(selection3)
+
+        vrijstand = 1000000
+        currentHouse = housesCopy[type][type_string.format(i)]
+
+        for house in selection:
+            twoHouses = currentHouse, selection[house]
+            currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+
+            if 0 <= currentVrijstand < vrijstand:
+                vrijstand = currentVrijstand
+
+        distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+        if distanceToWall/2.0 < vrijstand:
+            vrijstand = distanceToWall/2.0
+
+        if type == 0 and vrijstand < 6:
+            return "invalid move"
+        if type == 1 and vrijstand < 3:
+            return "invalid move"
+        if type == 2 and vrijstand < 2:
+            return "invalid move"
+
+        housesCopy[type][type_string.format(i)][1] = vrijstand
+
+        for house in selection:
+            if housesCopy == "invalid move":
+                return "invalid move"
+            housesCopy = self.getFilteredVrijstandSelection(housesCopy, house)
+
+        return housesCopy
+
+    def getFilteredVrijstandSelection(self, houses, housename):
+        for i in range(3):
+            if housename in houses[i]:
+                currentHouse = houses[i][housename]
+                x_lu = currentHouse[2] - 100
+                x_ru = currentHouse[4] + 100
+                y_lu = currentHouse[3] - 100
+                y_ld = currentHouse[7] + 100
+
+                selection = {}
+                #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
+                selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+                selection2 = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+                selection3 = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+
+                selection.update(selection1)
+                selection.update(selection2)
+                selection.update(selection3)
+
+                vrijstand = 1000000
+
+                for house in selection:
+                    twoHouses = currentHouse, selection[house]
+                    currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
+
+                    if 0 <= currentVrijstand < vrijstand:
+                        vrijstand = currentVrijstand
+
+                distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
+                if distanceToWall/2.0 < vrijstand:
+                    vrijstand = distanceToWall/2.0
+
+                if "maison" in housename and vrijstand < 6:
+                    return "invalid move"
+                if "bungalow" in housename and vrijstand < 3:
+                    return "invalid move"
+                if "singlefamily" in housename and vrijstand < 2:
+                    return "invalid move"
+
+                for i in range(2):
+                    if housename in houses[i]:
+                        houses[i][housename.format(i)][1] = vrijstand
+
+                return houses
+
+    def calculateValue(self, type, vrijstand):
+        global housevalue
+        if type == 2:
+            housevalue = 285000 + (vrijstand - 2) * 0.03 * 285000
+        elif type == 1:
+            housevalue = 399000 + (vrijstand - 3) * 0.04 * 399000
+        elif type == 0:
+            housevalue = 610000 + (vrijstand - 6) * 0.06 * 610000
+
+        return round(housevalue, 2)
+
+    def totalValue(self, houses):
+        value = 0
+
+        for housetype in range(3):
+            for number in range(len(houses[housetype])):
+
+                if housetype == 2:
+                    value += houses[housetype]["singlefamily{0}".format(number)][0]
+                elif housetype == 1:
+                    value += houses[housetype]["bungalow{0}".format(number)][0]
+                else:
+                    value += houses[housetype]["maison{0}".format(number)][0]
+
+        return value
+
+    def calculateProvisionalValue(self, houses, type, type_string, firstIndex, i, step):
+            housesCopy = deepcopy(houses)
+            housesCopy[type][type_string.format(i)][firstIndex] = housesCopy[type][type_string.format(i)][firstIndex] + step
+            housesCopy[type][type_string.format(i)][firstIndex + 2] = housesCopy[type][type_string.format(i)][firstIndex + 2] + step
+            housesCopy[type][type_string.format(i)][firstIndex + 4] = housesCopy[type][type_string.format(i)][firstIndex + 4] + step
+            housesCopy[type][type_string.format(i)][firstIndex + 6] = housesCopy[type][type_string.format(i)][firstIndex + 6] + step
+
+            housesCopy = self.getFilteredVrijstand(housesCopy, type_string, i, type)
+            if housesCopy == "invalid move":
+                return "invalid move"
+            else:
+                housesCopy[type][type_string.format(i)][0] = self.calculateValue(type, housesCopy[type][type_string.format(i)][1])
+            return housesCopy
+
+    def moveHouse(self, houses, type_string, i, fieldvalue, type):
+
+        houses_up = self.calculateProvisionalValue(houses, type, type_string, 3, i, -2)
+        if houses_up == "invalid move":
+            fieldvalue_up = 0
+        else:
+            fieldvalue_up = self.totalValue(houses_up)
+
+        houses_dwn = self.calculateProvisionalValue(houses, type, type_string, 3, i, 2)
+        if houses_dwn == "invalid move":
+            fieldvalue_dwn = 0
+        else:
+            fieldvalue_dwn = self.totalValue(houses_dwn)
+
+        houses_lft = self.calculateProvisionalValue(houses, type, type_string, 2, i, -2)
+        if houses_lft == "invalid move":
+            fieldvalue_lft = 0
+        else:
+            fieldvalue_lft = self.totalValue(houses_lft)
+
+        houses_rght = self.calculateProvisionalValue(houses, type, type_string, 2, i, 2)
+        if houses_rght == "invalid move":
+            fieldvalue_rght = 0
+        else:
+            fieldvalue_rght = self.totalValue(houses_rght)
+
+        newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
+
+        houselist = []
+        if newfieldvalue >= fieldvalue:
+            if newfieldvalue == fieldvalue_rght:
+                houselist.append(houses_rght)
+            elif newfieldvalue == fieldvalue_lft:
+                houselist.append(houses_lft)
+            elif newfieldvalue == fieldvalue_dwn:
+                houselist.append(houses_dwn)
+            else:
+                houselist.append(houses_up)
+            return random.choice(houselist)
+        else:
+            return houses
+
+def initializeSimulation(mais, bung, egws, width, height):
+    area = ConstructionSite(width, height)
+    waterPieces = random.randint(1,4)
+
+    amountWater = 19200
+    houses = area.createVariables(waterPieces, mais, bung, egws)
+
+    # build right amount of water pieces
+    counter = 1
+    waterLength = 0
+    waterWidth = 0
+    while counter <= waterPieces:
+        if counter == waterPieces:
+            areaWaterPiece = amountWater
+        else:
+            if amountWater > 0:
+                areaWaterPiece = random.randint(1, amountWater)
+        waterRatio = random.randint(1,4)
+        sqrtInput = waterRatio * areaWaterPiece
+        if sqrtInput < 0:
+            sqrtInput = 0
+        waterLength = int(round(math.sqrt(sqrtInput)))
+        waterWidth = int(round(waterLength / waterRatio))
+
+        x_pos = random.randint(0, width - waterLength)
+        y_pos = random.randint(0, height - waterWidth)
+
+        if area.checkIfPossible(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth) == True:
+            area.buildWater(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
+            houses[3]["water{0}".format(counter - 1)] = area.savePositions(x_pos, y_pos, waterLength, waterWidth)
+            amountWater -= areaWaterPiece
+            counter += 1
+
+    # build right amount of maisons
+    counter = 0
+    while counter < mais:
+        x_pos = random.randint(0 + 12, width - 22 - 12)
+        y_pos = random.randint(0 + 12, height - 21 - 12)
+        if area.checkIfPossible(x_pos, x_pos + 22, y_pos, y_pos + 21) == True:
+            area.buildVrijstand(x_pos, x_pos + 22, y_pos, y_pos + 21, 12)
+            area.buildWoning(x_pos, x_pos + 22, y_pos, y_pos + 21, 1)
+            houses[0]["maison{0}".format(counter)] = area.savePositions(x_pos, y_pos, 22, 21)
+            counter += 1
+
+    # build right amount of bungalows
+    counter = 0
+    while counter < bung:
+        x_pos = random.randint(0 + 6, width - 20 - 6)
+        y_pos = random.randint(0 + 6, height - 15 - 6)
+        if area.checkIfPossible(x_pos, x_pos + 20, y_pos, y_pos + 15) == True:
+            area.buildVrijstand(x_pos, x_pos + 20, y_pos, y_pos + 15, 6)
+            area.buildWoning(x_pos, x_pos + 20, y_pos, y_pos + 15, 2)
+            houses[1]["bungalow{0}".format(counter)] = area.savePositions(x_pos, y_pos, 20, 15)
+            counter += 1
+
+    # build right amount of egws
+    counter = 0
+    while counter < egws:
+        x_pos = random.randint(0 + 4, width - 16 - 4)
+        y_pos = random.randint(0 + 4, height - 16 - 4)
+        if area.checkIfPossible(x_pos, x_pos + 16, y_pos, y_pos + 16) == True:
+            area.buildVrijstand(x_pos, x_pos + 16, y_pos, y_pos + 16, 4)
+            area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 3)
+            houses[2]["singlefamily{0}".format(counter)] = area.savePositions(x_pos, y_pos, 16, 16)
+            counter += 1
+
+    # calculateVrijstand and calculateValue for maison
+    for i in range(mais):
+        houses[0]["maison{0}".format(i)][1] = area.getVrijstand(houses[0]["maison{0}".format(i)], houses)
+        houses[0]["maison{0}".format(i)][0] = area.calculateValue(0, houses[0]["maison{0}".format(i)][1])
+
+    for i in range(bung):
+        houses[1]["bungalow{0}".format(i)][1] = area.getVrijstand(houses[1]["bungalow{0}".format(i)], houses)
+        houses[1]["bungalow{0}".format(i)][0] = area.calculateValue(1, houses[1]["bungalow{0}".format(i)][1])
+
+    for i in range(egws):
+        houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses)
+        houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
+
+    # calculate total value of area
+    totalvalue = area.totalValue(houses)
+
+    print houses
+    plt.imshow(area.area)
+    plt.show()
+
+    return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
+
+def randomAlgorithm(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+
+    for i in range(runs):
+        print "60 variant"
+        value60.append(initializeSimulation(9, 15, 36, 300, 320)['totalvalue'])
+        print "40 variant"
+        value40.append(initializeSimulation(6, 10, 24, 300, 320)['totalvalue'])
+        print "20 variant"
+        value20.append(initializeSimulation(3, 5, 12, 300, 320)['totalvalue'])
+        print i
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value ")
+    plt.ylabel("Frequency")
+    plt.show()
+
+def hillClimber(maxMoves, mais, bung, egws):
+
+    #result = initializeSimulation(mais, bung, egws, 300, 320)
+    #houses = result['houses']
+    #totalvalue = result['totalvalue']
+
+    area = ConstructionSite(300, 320)
+    houses = ({'maison0': [0, 6.0, 116, 223, 138, 223, 116, 244, 138, 244], 'maison1': [0, 6.0, 78, 220, 100, 220, 78, 241, 100, 241]}, {'bungalow0': [0, 3.0, 170, 246, 190, 246, 170, 261, 190, 261]}, {'singlefamily0': [0, 3.0, 38, 275, 54, 275, 38, 291, 54, 291]})
+    totalvalue = 0
+
+    for housetype in range(3):
+        for number in range(len(houses[housetype])):
+
+            if housetype == 2:
+                house = houses[housetype]["singlefamily{0}".format(number)]
+            elif housetype == 1:
+                house = houses[housetype]["bungalow{0}".format(number)]
+            else:
+                house = houses[housetype]["maison{0}".format(number)]
+
+            area.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
+
+    moves = ConstructionSite(300, 320)
+
+    print "INITIAL", totalvalue
+
+    numberIterations = 0
+    nothingChanged = 0
+
+    while nothingChanged < 20 and numberIterations <= maxMoves:
+        oldTotalvalue = totalvalue
+        # move houses and return houses area with changed values
+        for i in range(1):
+            houses = moves.moveHouse(houses, "maison{0}", i, totalvalue, 0)
+            totalvalue = moves.totalValue(houses)
+        for i in range(0):
+            houses = moves.moveHouse(houses, "bungalow{0}", i, totalvalue, 1)
+            totalvalue = moves.totalValue(houses)
+        for i in range(0):
+            houses = moves.moveHouse(houses, "singlefamily{0}", i, totalvalue, 2)
+            totalvalue = moves.totalValue(houses)
+
+        numberIterations += 1
+        print numberIterations, totalvalue
+
+        if totalvalue == oldTotalvalue:
+            nothingChanged += 1
+        else:
+            nothingChanged = 0
+
+    print "FINAL", totalvalue
+
+    finalArea = ConstructionSite(300, 320)
+
+    print houses
+
+    for water in range(len(houses[3])):
+        waterPiece = houses[3]["water{0}".format(water)]
+        finalArea.buildWater(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
+
+    for housetype in range(3):
+        for number in range(len(houses[housetype])):
+
+            if housetype == 2:
+                house = houses[housetype]["singlefamily{0}".format(number)]
+            elif housetype == 1:
+                house = houses[housetype]["bungalow{0}".format(number)]
+            else:
+                house = houses[housetype]["maison{0}".format(number)]
+
+            finalArea.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
+
+    plt.imshow(finalArea.area)
+    plt.show()
+
+'''Uncomment algorithm you want to execute'''
+# Initialize random configuration
+#initializeSimulation(9, 15, 36, 300, 320)
+#initializeSimulation(6, 10, 24, 300, 320)
+#initializeSimulation(3, 5, 12, 300, 320)
+#initializeSimulation(2, 1, 1, 300, 320)
+
+# fill in how many times you want to execute this algorithm
+#randomAlgorithm(1)
+
+# 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+hillClimber(200, 3, 5, 12)
