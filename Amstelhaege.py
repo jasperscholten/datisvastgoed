@@ -170,16 +170,18 @@ class ConstructionSite(object):
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-        x_lu = houses[type][type_string.format(i)][2] - 20
-        x_ru = houses[type][type_string.format(i)][4] + 20
-        y_lu = houses[type][type_string.format(i)][3] - 20
-        y_ld = houses[type][type_string.format(i)][7] + 20
+        housesCopy = deepcopy(houses)
+
+        x_lu = housesCopy[type][type_string.format(i)][2] - 20
+        x_ru = housesCopy[type][type_string.format(i)][4] + 20
+        y_lu = housesCopy[type][type_string.format(i)][3] - 20
+        y_ld = housesCopy[type][type_string.format(i)][7] + 20
 
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
-        selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
-        selection2 = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
-        selection3 = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection1 = {k: v for k, v in housesCopy[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection2 = {k: v for k, v in housesCopy[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection3 = {k: v for k, v in housesCopy[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
 
         selection.update(selection1)
         selection.update(selection2)
@@ -187,7 +189,7 @@ class ConstructionSite(object):
 
         vrijstand = 1000000
 
-        currentHouse = houses[type][type_string.format(i)]
+        currentHouse = housesCopy[type][type_string.format(i)]
 
         for house in selection:
             twoHouses = currentHouse, selection[house]
@@ -208,14 +210,14 @@ class ConstructionSite(object):
         if type == 2 and vrijstand < 2:
             return "invalid move"
 
-        houses[type][type_string.format(i)][1] = vrijstand
+        housesCopy[type][type_string.format(i)][1] = vrijstand
 
         for house in selection:
-            if houses == "invalid move":
+            if housesCopy == "invalid move":
                 return "invalid move"
-            houses = self.getFilteredVrijstandSelection(houses, house)
+            housesCopy = self.getFilteredVrijstandSelection(housesCopy, house)
 
-        return houses
+        return housesCopy
 
     def getFilteredVrijstandSelection(self, houses, housename):
         for i in range(3):
@@ -500,7 +502,6 @@ def hillClimber(maxMoves, mais, bung, egws):
 
     result = initializeSimulation(mais, bung, egws, 300, 320)
     houses = result['houses']
-    print houses
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
 
@@ -568,4 +569,4 @@ def hillClimber(maxMoves, mais, bung, egws):
 #randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(200, 9, 15, 36)
+hillClimber(200, 3, 5, 12)
