@@ -201,8 +201,6 @@ class ConstructionSite(object):
         if distanceToWall/2.0 < vrijstand:
             vrijstand = distanceToWall/2.0
 
-        houses[type][type_string.format(i)][1] = vrijstand
-
         if type == 0 and vrijstand < 6:
             return "invalid move"
         if type == 1 and vrijstand < 3:
@@ -210,7 +208,11 @@ class ConstructionSite(object):
         if type == 2 and vrijstand < 2:
             return "invalid move"
 
+        houses[type][type_string.format(i)][1] = vrijstand
+
         for house in selection:
+            if houses == "invalid move":
+                return "invalid move"
             houses = self.getFilteredVrijstandSelection(houses, house)
 
         return houses
@@ -248,6 +250,13 @@ class ConstructionSite(object):
                 distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
                 if distanceToWall/2.0 < vrijstand:
                     vrijstand = distanceToWall/2.0
+
+                if "maison" in housename and vrijstand < 6:
+                    return "invalid move"
+                if "bungalow" in housename and vrijstand < 3:
+                    return "invalid move"
+                if "singlefamily" in housename and vrijstand < 2:
+                    return "invalid move"
 
                 for i in range(2):
                     if housename in houses[i]:
@@ -310,7 +319,6 @@ class ConstructionSite(object):
     # move 1m up
         houses_up = self.calculateProvisionalValue(houses, type, type_string, 3, i, -2)
         if houses_up == "invalid move":
-            print "invalid move"
             fieldvalue_up = 0
         else:
             fieldvalue_up = self.totalValue(houses_up)
@@ -318,7 +326,6 @@ class ConstructionSite(object):
     # move 1m down
         houses_dwn = self.calculateProvisionalValue(houses, type, type_string, 3, i, 2)
         if houses_dwn == "invalid move":
-            print "invalid move"
             fieldvalue_dwn = 0
         else:
             fieldvalue_dwn = self.totalValue(houses_dwn)
@@ -326,7 +333,6 @@ class ConstructionSite(object):
     # move 1m to left
         houses_lft = self.calculateProvisionalValue(houses, type, type_string, 2, i, -2)
         if houses_lft == "invalid move":
-            print "invalid move"
             fieldvalue_lft = 0
         else:
             fieldvalue_lft = self.totalValue(houses_lft)
@@ -334,7 +340,6 @@ class ConstructionSite(object):
     # move 1m to right
         houses_rght = self.calculateProvisionalValue(houses, type, type_string, 2, i, 2)
         if houses_rght == "invalid move":
-            print "invalid move"
             fieldvalue_rght = 0
         else:
             fieldvalue_rght = self.totalValue(houses_rght)
@@ -495,6 +500,7 @@ def hillClimber(maxMoves, mais, bung, egws):
 
     result = initializeSimulation(mais, bung, egws, 300, 320)
     houses = result['houses']
+    print houses
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
 
@@ -529,6 +535,8 @@ def hillClimber(maxMoves, mais, bung, egws):
     #plt.show()
 
     finalArea = ConstructionSite(300, 320)
+
+    print houses
 
     for water in range(len(houses[3])):
         waterPiece = houses[3]["water{0}".format(water)]
