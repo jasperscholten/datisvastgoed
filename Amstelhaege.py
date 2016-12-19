@@ -1,6 +1,7 @@
 import numpy
 import random
 import math
+import collections
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
@@ -170,18 +171,16 @@ class ConstructionSite(object):
         # Hoe weten welke variant we bekijken?
         # 20 huizen: 100 ruimte - 40 huizen: 75 - 60 huizen: 50
 
-        housesCopy = deepcopy(houses)
-
-        x_lu = housesCopy[type][type_string.format(i)][2] - 20
-        x_ru = housesCopy[type][type_string.format(i)][4] + 20
-        y_lu = housesCopy[type][type_string.format(i)][3] - 20
-        y_ld = housesCopy[type][type_string.format(i)][7] + 20
+        x_lu = houses[type][type_string.format(i)][2] - 100
+        x_ru = houses[type][type_string.format(i)][4] + 100
+        y_lu = houses[type][type_string.format(i)][3] - 100
+        y_ld = houses[type][type_string.format(i)][7] + 100
 
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
-        selection1 = {k: v for k, v in housesCopy[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
-        selection2 = {k: v for k, v in housesCopy[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
-        selection3 = {k: v for k, v in housesCopy[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection2 = {k: v for k, v in houses[1].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
+        selection3 = {k: v for k, v in houses[2].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
 
         selection.update(selection1)
         selection.update(selection2)
@@ -189,7 +188,7 @@ class ConstructionSite(object):
 
         vrijstand = 1000000
 
-        currentHouse = housesCopy[type][type_string.format(i)]
+        currentHouse = houses[type][type_string.format(i)]
 
         for house in selection:
             twoHouses = currentHouse, selection[house]
@@ -210,14 +209,14 @@ class ConstructionSite(object):
         if type == 2 and vrijstand < 2:
             return "invalid move"
 
-        housesCopy[type][type_string.format(i)][1] = vrijstand
+        houses[type][type_string.format(i)][1] = vrijstand
 
         for house in selection:
-            if housesCopy == "invalid move":
+            if houses == "invalid move":
                 return "invalid move"
-            housesCopy = self.getFilteredVrijstandSelection(housesCopy, house)
+            houses = self.getFilteredVrijstandSelection(houses, house)
 
-        return housesCopy
+        return houses
 
     def getFilteredVrijstandSelection(self, houses, housename):
         for i in range(3):
@@ -448,6 +447,7 @@ def initializeSimulation(mais, bung, egws, width, height):
     # calculate total value of area
     totalvalue = area.totalValue(houses)
 
+    print houses
     plt.imshow(area.area)
     plt.show()
 
