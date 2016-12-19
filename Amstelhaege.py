@@ -176,7 +176,6 @@ class ConstructionSite(object):
         y_lu = houses[type][type_string.format(i)][3] - 100
         y_ld = houses[type][type_string.format(i)][7] + 100
 
-
         selection = {}
         #http://stackoverflow.com/questions/2844516/how-to-filter-a-dictionary-according-to-an-arbitrary-condition-function
         selection1 = {k: v for k, v in houses[0].items() if x_lu < (v[2] or v[4]) < x_ru or y_lu < (v[3] or v[7]) < y_ld}
