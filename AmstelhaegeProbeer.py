@@ -440,7 +440,8 @@ def hillClimber(maxMoves, variant):
     houses = result['houses']
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
-
+    numberIterationsArray = []
+    totalvalueArray = []
 
     print "INITIAL", totalvalue
 
@@ -465,6 +466,8 @@ def hillClimber(maxMoves, variant):
 
         numberIterations += 1
         print numberIterations, totalvalue
+        numberIterationsArray.append(numberIterations)
+        totalvalueArray.append(totalvalue)
 
         if totalvalue == oldTotalvalue:
             nothingChanged += 1
@@ -474,6 +477,11 @@ def hillClimber(maxMoves, variant):
     print "FINAL", totalvalue
     #plt.imshow(moves.area)
     #plt.show()
+
+    plt.plot(numberIterationsArray,totalvalueArray)
+    plt.xlabel('Number of iterations')
+    plt.ylabel('Total value')
+    plt.show()
 
     finalArea = ConstructionSite(300, 320)
 
