@@ -182,7 +182,7 @@ x_search = x_pos - 14
               return value
 
 
-'''
+
 def getFilteredVrijstand(self, houses, type_string, i, type):
 
       # Hoe weten welke variant we bekijken?
@@ -278,4 +278,3 @@ def getFilteredVrijstand(self, houses, type_string, i, type):
                       houses[i][housename.format(i)][1] = vrijstand
 
               return houses
-'''
