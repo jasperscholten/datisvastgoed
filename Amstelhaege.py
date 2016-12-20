@@ -154,8 +154,8 @@ class ConstructionSite(object):
             vrijstand = distanceToWall/2.0
 
         for i in range(len(houses[3])):
-            if self.betweenCorners(houses[3]["water{0}".format(i)][2], houses[3]["water{0}".format(i)][4], currentHouse[2], currentHouse[4]):
-                if self.betweenCorners(houses[3]["water{0}".format(i)][3], houses[3]["water{0}".format(i)][7], currentHouse[3], currentHouse[7]):
+            if self.betweenCorners(houses[3]["water{0}".format(i)][2], houses[3]["water{0}".format(i)][4],  currentHouse[2],  currentHouse[4]):
+                if self.betweenCorners(houses[3]["water{0}".format(i)][3], houses[3]["water{0}".format(i)][7],  currentHouse[3],  currentHouse[7]):
                     return "invalid move"
 
         if type == 0 and vrijstand < 6:
@@ -519,15 +519,15 @@ def hillClimber(maxMoves, variant):
             nothingChanged = 0
 
     print "FINAL", totalvalue
-    #plt.imshow(moves.area)
-    #plt.show()
 
     plt.plot(numberIterationsArray,totalvalueArray)
     plt.xlabel('Number of iterations')
     plt.ylabel('Total value')
-    plt.show()
+    #plt.show()
 
-    visualizeArea(houses)
+    #visualizeArea(houses)
+
+    return {'totalvalue': totalvalue}
 
 def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
     mais = int(variant * 0.15)
@@ -569,6 +569,51 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
 
     visualizeArea(houses)
 
+def repeatHillClimber(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+
+    for i in range(runs):
+        print "60 variant"
+        value60.append(hillClimber(200, 60)['totalvalue'])
+        print "40 variant"
+        value40.append(hillClimber(200, 40)['totalvalue'])
+        print "20 variant"
+        value20.append(hillClimber(200, 20)['totalvalue'])
+        print i
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
 '''Uncomment algorithm you want to execute'''
 # Initialize random configuration
 #initializeSimulation(9, 15, 36, 300, 320)
@@ -580,7 +625,9 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
 #randomAlgorithm(30)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-#hillClimber(200, 20)
+hillClimber(200, 20)
 
 # Variant, T, T_min, alpha
-simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+#simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+
+#repeatHillClimber(2)
