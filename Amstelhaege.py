@@ -626,8 +626,7 @@ def repeatHillClimber(runs):
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 hillClimber(200, 20)
+#repeatHillClimber(2)
 
 # Variant, T, T_min, alpha
 #simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
-
-#repeatHillClimber(2)
