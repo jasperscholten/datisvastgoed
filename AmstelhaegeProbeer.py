@@ -34,28 +34,19 @@ class ConstructionSite(object):
 
     def buildWoning(self, x_start, x_end, y_start, y_end, type):
         """
-        Build a house on the given location
+        Build a house or water on the given location
         """
         # change values in range
-        for x in range(x_start, x_end):
-            for y in range(y_start, y_end):
+        for x in range(x_start, x_end + 1):
+            for y in range(y_start, y_end + 1):
                 self.area[(y, x)] = type
-
-    def buildWater(self, x_start, x_end, y_start, y_end, water):
-        """
-        Build water on the given location
-        """
-        # change values in range
-        for x in range(x_start, x_end):
-            for y in range(y_start, y_end):
-                self.area[(y, x)] = 5
 
     def checkIfPossible(self, x_start, x_end, y_start, y_end):
         """
         Check if it is possible to build on the given location
         """
-        for x in range(x_start, x_end):
-            for y in range(y_start, y_end):
+        for x in range(x_start, x_end + 1):
+            for y in range(y_start, y_end + 1):
                 if self.area[(y, x)] != 0:
                     return False
         return True
@@ -161,6 +152,11 @@ class ConstructionSite(object):
         if distanceToWall/2.0 < vrijstand:
             #gedeeld door 2 vanwege blokken van 0.5 meter
             vrijstand = distanceToWall/2.0
+
+        for i in range(len(houses[3])):
+            if self.betweenCorners(houses[3]["water{0}".format(i)][2], houses[3]["water{0}".format(i)][4], currentHouse[2], currentHouse[4]):
+                if self.betweenCorners(houses[3]["water{0}".format(i)][3], houses[3]["water{0}".format(i)][7], currentHouse[3], currentHouse[7]):
+                    return "invalid move"
 
         if type == 0 and vrijstand < 6:
             return "invalid move"
@@ -329,7 +325,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         y_pos = random.randint(0, height - waterWidth)
 
         if area.checkIfPossible(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth) == True:
-            area.buildWater(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
+            area.buildWoning(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
             houses[3]["water{0}".format(counter - 1)] = area.savePositions(x_pos, y_pos, waterLength, waterWidth)
             amountWater -= areaWaterPiece
             counter += 1
@@ -381,6 +377,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
     # calculate total value of area
+    print houses
     totalvalue = area.totalValue(houses)
 
     plt.imshow(area.area)
@@ -444,6 +441,7 @@ def hillClimber(maxMoves, variant):
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
 
+
     print "INITIAL", totalvalue
 
     numberIterations = 0
@@ -481,7 +479,7 @@ def hillClimber(maxMoves, variant):
 
     for water in range(len(houses[3])):
         waterPiece = houses[3]["water{0}".format(water)]
-        finalArea.buildWater(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
+        finalArea.buildWoning(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
 
     for housetype in range(3):
         for number in range(len(houses[housetype])):
