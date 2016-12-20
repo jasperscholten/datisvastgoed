@@ -37,16 +37,16 @@ class ConstructionSite(object):
         Build a house or water on the given location
         """
         # change values in range
-        for x in range(x_start, x_end + 1):
-            for y in range(y_start, y_end + 1):
+        for x in range(x_start - 1, x_end):
+            for y in range(y_start - 1, y_end):
                 self.area[(y, x)] = type
 
     def checkIfPossible(self, x_start, x_end, y_start, y_end):
         """
         Check if it is possible to build on the given location
         """
-        for x in range(x_start, x_end + 1):
-            for y in range(y_start, y_end + 1):
+        for x in range(x_start - 1, x_end):
+            for y in range(y_start - 1, y_end):
                 if self.area[(y, x)] != 0:
                     return False
         return True
@@ -71,8 +71,8 @@ class ConstructionSite(object):
 
         return maison, bungalow, singlefam, water
 
-    def savePositions(self, x_pos, y_pos, length, width):
-        positions = ['value', 'vrijstand', x_pos, y_pos, x_pos + length, y_pos, x_pos, y_pos + width, x_pos + length, y_pos + width]
+    def savePositions(self, x_pos, y_pos, leng, wid):
+        positions = ['value', 'vrijstand', x_pos, y_pos, x_pos + leng, y_pos, x_pos, y_pos + wid, x_pos + leng, y_pos + wid]
         return positions
 
     # zorg ervoor dat: a < b, c < d
@@ -84,10 +84,10 @@ class ConstructionSite(object):
 
     # huis 1: ax, ay - huis 2: bx, by
     def pythagoras(self, ax, ay, bx, by):
-        length = abs(ax - bx)
-        width = abs(ay - by)
+        leng = abs(ax - bx)
+        wid = abs(ay - by)
 
-        return math.sqrt(length**2 + width**2)
+        return math.sqrt(leng**2 + wid**2)
 
     def calculateVrijstand(self, houses):
 
@@ -377,7 +377,6 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
     # calculate total value of area
-    print houses
     totalvalue = area.totalValue(houses)
 
     plt.imshow(area.area)
@@ -515,4 +514,4 @@ def hillClimber(maxMoves, variant):
 #randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(200, 40)
+hillClimber(200, 60)
