@@ -211,21 +211,21 @@ class ConstructionSite(object):
             housesCopy[type][type_string.format(i)][firstIndex + 4] = housesCopy[type][type_string.format(i)][firstIndex + 4] + step
             housesCopy[type][type_string.format(i)][firstIndex + 6] = housesCopy[type][type_string.format(i)][firstIndex + 6] + step
 
-            for i in range(9):
+            for i in range(len(houses[0])):
                 housesCopy[0]["maison{0}".format(i)][1] = self.getVrijstand(housesCopy[0]["maison{0}".format(i)], housesCopy, 0)
                 if housesCopy[0]["maison{0}".format(i)][1] == "invalid move":
                     print "invalid move"
                     return "invalid move"
                 housesCopy[0]["maison{0}".format(i)][0] = self.calculateValue(0, housesCopy[0]["maison{0}".format(i)][1])
 
-            for i in range(15):
+            for i in range(len(houses[1])):
                 housesCopy[1]["bungalow{0}".format(i)][1] = self.getVrijstand(housesCopy[1]["bungalow{0}".format(i)], housesCopy, 1)
                 if housesCopy[1]["bungalow{0}".format(i)][1] == "invalid move":
                     print "invalid move"
                     return "invalid move"
                 housesCopy[1]["bungalow{0}".format(i)][0] = self.calculateValue(1, housesCopy[1]["bungalow{0}".format(i)][1])
 
-            for i in range(36):
+            for i in range(len(houses[2])):
                 housesCopy[2]["singlefamily{0}".format(i)][1] = self.getVrijstand(housesCopy[2]["singlefamily{0}".format(i)], housesCopy, 2)
                 if housesCopy[2]["singlefamily{0}".format(i)][1] == "invalid move":
                     print "invalid move"
