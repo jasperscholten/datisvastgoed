@@ -2,31 +2,20 @@
 # Jasper Scholten
 # 11157887
 
-import numpy
-import matplotlib.pyplot as plt
+water = [0, 0, 10, 10, 30, 10, 10, 20, 30, 20]
 
-# 160 meter in pieces of 0,5 meter
-height = 320
-# 150 meter in pieces of 0,5 meter
-width = 300
+currentHouse = [0, 0, 1, 2, 20, 2, 1, 22, 20, 22]
 
-# print height*width
-area = numpy.zeros((height,width), dtype="int32")
+def betweenCorners(a, b, c, d):
+    if (a >= c and a <= d) or (b >= c and b <= d) or (c >= a and c <= b) or (d >= a and d <= b):
+        return True
+    else:
+        return False
 
-for x in range(40, 140):
-    for y in range(40, 140):
-        area[(y, x)] = 1
-
-for x in range(40, 140):
-    for y in range(160, 180):
-        area[(y, x)] = 1
-
-for x in range(180, 210):
-    for y in range(60, 250):
-        area[(y, x)] = 2
-
-print area
-
-plt.imshow(area)
-#plt.gray()
-plt.show()
+if betweenCorners(water[2], water[4], currentHouse[2], currentHouse[4]):
+    if betweenCorners(water[3], water[7], currentHouse[3], currentHouse[7]):
+        print "jaa"
+    else:
+        print "nee2"
+else:
+    print "nee"
