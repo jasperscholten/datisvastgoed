@@ -28,8 +28,8 @@ class ConstructionSite(object):
         Add free space on the given location
         """
         # change values in range
-        for x in range(x_start - std_vrijstand, x_end + std_vrijstand):
-            for y in range(y_start - std_vrijstand, y_end + std_vrijstand):
+        for x in range(x_start - std_vrijstand - 1, x_end + std_vrijstand):
+            for y in range(y_start - std_vrijstand - 1, y_end + std_vrijstand):
                 self.area[(y, x)] = 4
 
     def buildWoning(self, x_start, x_end, y_start, y_end, type):
@@ -514,4 +514,4 @@ def hillClimber(maxMoves, variant):
 #randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(200, 60)
+hillClimber(200, 40)
