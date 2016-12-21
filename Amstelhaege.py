@@ -624,21 +624,21 @@ def repeatHillClimber(runs, filename):
     for i in range(runs):
         print i
         print "60 variant"
-        result = hillClimber(200, 60)
+        result = hillClimber(200, 60, 'no')
         value60.append(result['totalvalue'])
         if result['totalvalue'] > highestValue60:
             highestValue60 = result['totalvalue']
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = hillClimber(200, 40)
+        result = hillClimber(200, 40, 'no')
         value40.append(result['totalvalue'])
         if result['totalvalue'] > highestValue40:
             highestValue40 = result['totalvalue']
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = hillClimber(200, 20)
+        result = hillClimber(200, 20, 'no')
         value20.append(result['totalvalue'])
         if result['totalvalue'] > highestValue20:
             highestValue20 = result['totalvalue']
@@ -714,21 +714,21 @@ def repeatSimulatedAnnealing(runs, filename):
     for i in range(runs):
         print i
         print "60 variant"
-        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50, 'no')
         value60.append(result['totalvalue'])
         if result['totalvalue'] > highestValue60:
             highestValue60 = result['totalvalue']
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50, 'no')
         value40.append(result['totalvalue'])
         if result['totalvalue'] > highestValue40:
             highestValue40 = result['totalvalue']
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50, 'no')
         value20.append(result['totalvalue'])
         if result['totalvalue'] > highestValue20:
             highestValue20 = result['totalvalue']
