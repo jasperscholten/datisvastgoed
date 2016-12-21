@@ -514,4 +514,4 @@ def hillClimber(maxMoves, variant):
 #randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(200, 40)
+hillClimber(200, 60)
