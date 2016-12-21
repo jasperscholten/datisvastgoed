@@ -362,8 +362,8 @@ def createArrays(variant, totalvalue, vrijstand, waterPieces, waterarea):
     waterPiecesArray.append(waterPieces)
     waterareaArray.append(waterarea)
 
-def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows):
-    f = open("datisvastgoed\data.csv", 'wb')
+def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows, algorithm):
+    f = open("datisvastgoed\data_%s.csv" % algorithm, 'wb')
 
     writer = csv.writer(f)
     writer.writerow(('variant', 'Totalvalue', 'Vrijstand', 'waterPieces', 'waterarea'))
@@ -508,7 +508,7 @@ def randomAlgorithm(runs):
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print i
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "randomalgorithm")
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -641,7 +641,7 @@ def repeatHillClimber(runs):
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "hillclimberalgorithm")
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -762,7 +762,7 @@ def repeatSimulatedAnnealing(runs):
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "simulatedAnnealingalgorithm")
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
