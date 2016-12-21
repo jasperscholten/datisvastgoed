@@ -535,6 +535,8 @@ def hillClimber(maxMoves, variant):
     egws = int(variant * 0.6)
 
     result = initializeSimulation(mais, bung, egws, 300, 320)
+    waterPieces = result['waterPieces']
+    waterarea = result['waterarea']
     houses = result['houses']
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
@@ -586,12 +588,14 @@ def hillClimber(maxMoves, variant):
     plt.plot(numberIterationsArray,totalvalueArray)
     plt.xlabel('number Iterations')
     plt.ylabel('total value')
-    plt.show()
+    #plt.show()
 
     finalArea = ConstructionSite(300, 320)
+    totalvalue = moves.totalValue(houses, 0)
+    vrijstand = moves.totalValue(houses, 1)
 
 
-    return {'totalvalue': totalvalue}
+    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea}
 
 #http://katrinaeg.com/simulated-annealing.html
 def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
@@ -642,12 +646,19 @@ def repeatHillClimber(runs):
     for i in range(runs):
         print i
         print "60 variant"
-        value60.append(hillClimber(200, 60)['totalvalue'])
+        result = hillClimber(200, 60)
+        value60.append(result['totalvalue'])
+        createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        value40.append(hillClimber(200, 40)['totalvalue'])
+        result = hillClimber(200, 40)
+        value40.append(result['totalvalue'])
+        createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        value20.append(hillClimber(200, 20)['totalvalue'])
+        result = hillClimber(200, 20)
+        value20.append(result['totalvalue'])
+        createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -698,12 +709,12 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-randomAlgorithm(100)
+#randomAlgorithm(100)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 
 # hillClimber(200, 20)
-#repeatHillClimber(2)
+repeatHillClimber(6)
 
 # Variant, T, T_min, alpha
 #simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
