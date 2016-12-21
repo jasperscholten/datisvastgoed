@@ -425,7 +425,6 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses, 2)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
-    print houses
     # calculate total value of area
     totalvalue = area.totalValue(houses)
 
@@ -633,7 +632,7 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-#randomAlgorithm(30)
+randomAlgorithm(1000)
 
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
