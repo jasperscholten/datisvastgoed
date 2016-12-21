@@ -4,11 +4,13 @@ import math
 import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
-import xlwt
-from tempfile import TemporaryFile
+import csv
 
+variantArray = []
+totalvalueArray = []
+vrijstandArray = []
 waterPiecesArray = []
-waterRatioArray = []
+waterareaArray = []
 
 class ConstructionSite(object):
     """
@@ -188,18 +190,18 @@ class ConstructionSite(object):
 
         return round(housevalue, 2)
 
-    def totalValue(self, houses):
+    def totalValue(self, houses, index):
         value = 0
 
         for housetype in range(3):
             for number in range(len(houses[housetype])):
 
                 if housetype == 2:
-                    value += houses[housetype]["singlefamily{0}".format(number)][0]
+                    value += houses[housetype]["singlefamily{0}".format(number)][index]
                 elif housetype == 1:
-                    value += houses[housetype]["bungalow{0}".format(number)][0]
+                    value += houses[housetype]["bungalow{0}".format(number)][index]
                 else:
-                    value += houses[housetype]["maison{0}".format(number)][0]
+                    value += houses[housetype]["maison{0}".format(number)][index]
 
         return value
 
@@ -260,28 +262,28 @@ class ConstructionSite(object):
         if houses_up == "invalid move":
             fieldvalue_up = 0
         else:
-            fieldvalue_up = self.totalValue(houses_up)
+            fieldvalue_up = self.totalValue(houses_up, 0)
 
     # move 1m down
         houses_dwn = self.calculateProvisionalValue(variant, houses, type, type_string, 3, i, 2)
         if houses_dwn == "invalid move":
             fieldvalue_dwn = 0
         else:
-            fieldvalue_dwn = self.totalValue(houses_dwn)
+            fieldvalue_dwn = self.totalValue(houses_dwn, 0)
 
     # move 1m to left
         houses_lft = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, -2)
         if houses_lft == "invalid move":
             fieldvalue_lft = 0
         else:
-            fieldvalue_lft = self.totalValue(houses_lft)
+            fieldvalue_lft = self.totalValue(houses_lft, 0)
 
     # move 1m to right
         houses_rght = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, 2)
         if houses_rght == "invalid move":
             fieldvalue_rght = 0
         else:
-            fieldvalue_rght = self.totalValue(houses_rght)
+            fieldvalue_rght = self.totalValue(houses_rght, 0)
 
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
@@ -305,7 +307,7 @@ class ConstructionSite(object):
         if houses_move == "invalid move":
             return {'houses': houses, 'totalvalue': fieldvalue}
         else:
-            fieldvalue_move = self.totalValue(houses_move)
+            fieldvalue_move = self.totalValue(houses_move, 0)
         return {'houses': houses_move, 'totalvalue': fieldvalue_move}
 
     def pickHouseSA(self, mais, bung, egws):
@@ -349,28 +351,26 @@ def visualizeArea(houses):
     plt.imshow(area.area)
     plt.show()
 
-def createExcel(waterPieces, waterRatio):
+def createArrays(variant, totalvalue, vrijstand, waterPieces, waterarea):
     """
     create an Excel file for the amount of water pieces in the simulations.
     """
 
+    variantArray.append(variant)
+    totalvalueArray.append(totalvalue)
+    vrijstandArray.append(vrijstand)
     waterPiecesArray.append(waterPieces)
-    waterRatioArray.append(waterRatio)
-    print(waterPiecesArray, waterRatioArray)
+    waterareaArray.append(waterarea)
 
-def createBestand(waterPiecesArray, waterRatioArray):
+def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows):
+    f = open("datisvastgoed\data.csv", 'wb')
 
-    book = xlwt.Workbook()
-    sheet1 = book.add_sheet('sheet1')
-    data = [waterPiecesArray, waterRatioArray]
+    writer = csv.writer(f)
+    writer.writerow(('variant', 'Totalvalue', 'Vrijstand', 'waterPieces', 'waterarea'))
+    for i in range(rows):
+        writer.writerow((variantArray[i], totalvalueArray[i], vrijstandArray[i], waterPiecesArray[i], waterareaArray[i]))
+    f.close
 
-    for row, array in enumerate(data):
-        for col, value in enumerate(array):
-            sheet1.write(row, col, value)
-
-    name = "waterPieces, waterRatio.xls"
-    book.save(name)
-    book.save(TemporaryFile())
 
 def createField(area, waterPieces, houses, mais, bung, egws, width, height):
     timer = time.time() + 2
@@ -380,6 +380,7 @@ def createField(area, waterPieces, houses, mais, bung, egws, width, height):
     amountWater = 19200
     waterLength = 0
     waterWidth = 0
+    waterarea = []
     while counter <= waterPieces:
         if counter == waterPieces:
             areaWaterPiece = amountWater
@@ -400,6 +401,7 @@ def createField(area, waterPieces, houses, mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + waterLength, y_pos, y_pos + waterWidth, 5)
             houses[3]["water{0}".format(counter - 1)] = area.savePositions(x_pos, y_pos, waterLength, waterWidth)
             amountWater -= areaWaterPiece
+            waterarea.append(areaWaterPiece)
             counter += 1
 
     # build right amount of maisons
@@ -438,7 +440,7 @@ def createField(area, waterPieces, houses, mais, bung, egws, width, height):
             print 'restart'
             return 'start'
 
-    return {'area': area, 'houses': houses}
+    return {'area': area, 'houses': houses, 'waterarea': waterarea}
 
 def initializeSimulation(mais, bung, egws, width, height):
     """
@@ -469,13 +471,13 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
     # calculate total value of area
-    totalvalue = area.totalValue(houses)
+    totalvalue = area.totalValue(houses, 0)
+    vrijstand = area.totalValue(houses, 1)
 
     #plt.imshow(area.area)
     #plt.show()
 
-    createExcel(waterPieces, waterRatio)
-    return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
+    return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': result['waterarea'] }
 
 def randomAlgorithm(runs):
     value60 = []
@@ -483,12 +485,18 @@ def randomAlgorithm(runs):
     value20 = []
 
     for i in range(runs):
-        value60.append(initializeSimulation(9, 15, 36, 300, 320)['totalvalue'])
-        value40.append(initializeSimulation(6, 10, 24, 300, 320)['totalvalue'])
-        value20.append(initializeSimulation(3, 5, 12, 300, 320)['totalvalue'])
+        result = initializeSimulation(9, 15, 36, 300, 320)
+        value60.append(result['totalvalue'])
+        createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        result = initializeSimulation(6, 10, 24, 300, 320)
+        value40.append(result['totalvalue'])
+        createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        result = initializeSimulation(3, 5, 12, 300, 320)
+        value20.append(result['totalvalue'])
+        createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print i
 
-    createBestand(waterPiecesArray, waterRatioArray)
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -690,7 +698,7 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-randomAlgorithm(4)
+randomAlgorithm(100)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 
