@@ -483,16 +483,28 @@ def randomAlgorithm(runs):
     value60 = []
     value40 = []
     value20 = []
+    highestValue60 = 0
+    highestValue40 = 0
+    highestValue20 = 0
 
     for i in range(runs):
         result = initializeSimulation(9, 15, 36, 300, 320)
         value60.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue60:
+            highestValue60 = result['totalvalue']
+            highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         result = initializeSimulation(6, 10, 24, 300, 320)
         value40.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue40:
+            highestValue40 = result['totalvalue']
+            highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         result = initializeSimulation(3, 5, 12, 300, 320)
         value20.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue20:
+            highestValue20 = result['totalvalue']
+            highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print i
 
@@ -595,7 +607,7 @@ def hillClimber(maxMoves, variant):
     vrijstand = moves.totalValue(houses, 1)
 
 
-    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea}
+    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
 #http://katrinaeg.com/simulated-annealing.html
 def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
@@ -642,27 +654,42 @@ def repeatHillClimber(runs):
     value60 = []
     value40 = []
     value20 = []
+    highestValue60 = 0
+    highestValue40 = 0
+    highestValue20 = 0
 
     for i in range(runs):
         print i
         print "60 variant"
         result = hillClimber(200, 60)
         value60.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue60:
+            highestValue60 = result['totalvalue']
+            highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
         result = hillClimber(200, 40)
         value40.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue40:
+            highestValue40 = result['totalvalue']
+            highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
         result = hillClimber(200, 20)
         value20.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue20:
+            highestValue20 = result['totalvalue']
+            highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
     createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
 
     print "Average total value 20:", sum(value20)/float(len(value20))
+    print highestValue20, highestHouses20
     print "Average total value 40:", sum(value40)/float(len(value40))
+    print highestValue40, highestHouses40
     print "Average total value 60:", sum(value60)/float(len(value60))
+    print highestValue60, highestHouses60
 
     #https://plot.ly/matplotlib/histograms/
     print value20
@@ -709,12 +736,12 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-#randomAlgorithm(100)
+# randomAlgorithm(20)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 
 # hillClimber(200, 20)
-repeatHillClimber(6)
+repeatHillClimber(2)
 
 # Variant, T, T_min, alpha
 #simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
