@@ -4,7 +4,31 @@ import math
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
-class ConstructionSite(object):
+
+def printXY(old, new, T):
+    return math.e ** ((float(old) - float(new))/float(T))
+
+for i in range(20):
+    print printXY(16100000, 16000000, 0.9)
+
+print math.e
+
+
+def moveHouseSA(self, variant, houses, type_string, i, fieldvalue, type):
+
+    houses_move = self.calculateProvisionalValue(variant, houses, type, type_string, random.choice([2,3]), i, random.choice([-2,2]))
+    if houses_move == "invalid move":
+        return {'houses': houses, 'totalvalue': fieldvalue}
+    else:
+        fieldvalue_move = self.totalValue(houses_move)
+
+    return {'houses': houses_move, 'totalvalue': fieldvalue_move}
+
+
+
+
+
+'''class ConstructionSite(object):
     """
     The Construction is a rectangular form where the houses are build.
     """
@@ -269,10 +293,10 @@ class ConstructionSite(object):
                 return houses
 
     def calculateValue(self, type, vrijstand):
-        '''
+        """
         waarde = beginwaarde + vrijstand * procentuele waardevermeerdering per
                     meter * beginwaarde
-        '''
+        """
         global housevalue
         if type == 2:
             housevalue = 285000 + (vrijstand - 2) * 0.03 * 285000
@@ -330,9 +354,9 @@ class ConstructionSite(object):
 
             return housesCopy
 
-    '''
+    """
     Moet ingekort worden.
-    '''
+    """
     def moveHouse(self, houses, type_string, i, fieldvalue, type):
     # currentHouse = ['value', 'vrijstand', 'x_lu', 'y_lu', 'x_ru', 'y_ru', 'x_ld', 'y_ld', 'x_rd', 'y_rd']
 
@@ -576,7 +600,7 @@ def hillClimber(maxMoves, mais, bung, egws):
     plt.imshow(finalArea.area)
     plt.show()
 
-'''Uncomment algorithm you want to execute'''
+"""Uncomment algorithm you want to execute"""
 # Initialize random configuration
 #initializeSimulation(9, 15, 36, 300, 320)
 #initializeSimulation(6, 10, 24, 300, 320)
@@ -588,3 +612,4 @@ def hillClimber(maxMoves, mais, bung, egws):
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 hillClimber(200, 9, 15, 36)
+'''

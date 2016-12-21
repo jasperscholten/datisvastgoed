@@ -294,6 +294,55 @@ class ConstructionSite(object):
         else:
             return {'houses': houses, 'totalvalue': fieldvalue}
 
+    def moveHouseSA(self, variant, houses, type_string, i, fieldvalue, type):
+        houses_move = self.calculateProvisionalValue(variant, houses, type, type_string, random.choice([2,3]), i, random.choice([-2,2]))
+        if houses_move == "invalid move":
+            return {'houses': houses, 'totalvalue': fieldvalue}
+        else:
+            fieldvalue_move = self.totalValue(houses_move)
+        return {'houses': houses_move, 'totalvalue': fieldvalue_move}
+
+    def pickHouseSA(self, mais, bung, egws):
+        type_string = random.choice(["maison{0}","bungalow{0}","singlefamily{0}"])
+        i = 0
+        housetype = 0
+        if type_string == "maison{0}":
+            i = random.randint(0, mais - 1)
+            housetype = 0
+        elif type_string == "bungalow{0}":
+            i = random.randint(0, bung - 1)
+            housetype = 1
+        else:
+            i = random.randint(0, egws - 1)
+            housetype = 2
+
+        return {'type_string': type_string, 'i': i, 'housetype': housetype}
+
+    def acceptanceProbability(self, old, new, T):
+        return math.e ** ((float(old) - float(new))/float(T))
+
+def visualizeArea(houses):
+    area = ConstructionSite(300, 320)
+
+    for water in range(len(houses[3])):
+        waterPiece = houses[3]["water{0}".format(water)]
+        area.buildWoning(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
+
+    for housetype in range(3):
+        for number in range(len(houses[housetype])):
+
+            if housetype == 2:
+                house = houses[housetype]["singlefamily{0}".format(number)]
+            elif housetype == 1:
+                house = houses[housetype]["bungalow{0}".format(number)]
+            else:
+                house = houses[housetype]["maison{0}".format(number)]
+
+            area.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
+
+    plt.imshow(area.area)
+    plt.show()
+
 def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
@@ -376,11 +425,11 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses, 2)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
-    print houses 
+    print houses
     # calculate total value of area
     totalvalue = area.totalValue(houses)
 
-    plt.imshow(area.area)
+    #plt.imshow(area.area)
     #plt.show()
 
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
@@ -391,11 +440,8 @@ def randomAlgorithm(runs):
     value20 = []
 
     for i in range(runs):
-        print "60 variant"
         value60.append(initializeSimulation(9, 15, 36, 300, 320)['totalvalue'])
-        print "40 variant"
         value40.append(initializeSimulation(6, 10, 24, 300, 320)['totalvalue'])
-        print "20 variant"
         value20.append(initializeSimulation(3, 5, 12, 300, 320)['totalvalue'])
         print i
 
@@ -431,7 +477,6 @@ def randomAlgorithm(runs):
     plt.show()
 
 def hillClimber(maxMoves, variant):
-
     mais = int(variant * 0.15)
     bung = int(variant * 0.25)
     egws = int(variant * 0.6)
@@ -475,37 +520,55 @@ def hillClimber(maxMoves, variant):
             nothingChanged = 0
 
     print "FINAL", totalvalue
-    #plt.imshow(moves.area)
-    #plt.show()
 
     plt.plot(numberIterationsArray,totalvalueArray)
     plt.xlabel('Number of iterations')
     plt.ylabel('Total value')
     #plt.show()
 
-    finalArea = ConstructionSite(300, 320)
+    #visualizeArea(houses)
 
-    for water in range(len(houses[3])):
-        waterPiece = houses[3]["water{0}".format(water)]
-        finalArea.buildWoning(waterPiece[2], waterPiece[4], waterPiece[3], waterPiece[7], 5)
+    return {'totalvalue': totalvalue}
 
-    for housetype in range(3):
-        for number in range(len(houses[housetype])):
+def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
+    mais = int(variant * 0.15)
+    bung = int(variant * 0.25)
+    egws = int(variant * 0.6)
 
-            if housetype == 2:
-                house = houses[housetype]["singlefamily{0}".format(number)]
-            elif housetype == 1:
-                house = houses[housetype]["bungalow{0}".format(number)]
-            else:
-                house = houses[housetype]["maison{0}".format(number)]
+    initialResult = initializeSimulation(mais, bung, egws, 300, 320)
+    houses = initialResult['houses']
+    totalvalue = initialResult['totalvalue']
+    highestValue = totalvalue
+    oldCost = totalvalue/100000.0
+    moves = ConstructionSite(300, 320)
 
-            finalArea.buildWoning(house[2], house[4], house[3], house[7], (housetype + 1))
+    print "INITIAL:", totalvalue
 
-    totalvalue = moves.totalValue(houses)
-    plt.imshow(finalArea.area)
-    #plt.show()
+    while T > T_min:
+        iteration = 1
+        while iteration <= maxIterations:
+            pick = moves.pickHouseSA(mais, bung, egws)
+            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
+            newHouses = result['houses']
+            newTotalValue = result['totalvalue']
+            newCost = newTotalValue/100000.0
+            ap = moves.acceptanceProbability(oldCost, newCost, T)
 
-    return {'totalvalue':totalvalue, 'houses':houses, 'area':finalArea.area}
+            if ap > random.random():
+                houses = newHouses
+                totalvalue = newTotalValue
+                oldCost = newCost
+
+                if totalvalue > highestValue:
+                    highestValue = totalvalue
+            iteration += 1
+        print T, totalvalue
+        T = T*alpha
+
+    print "FINAL:", totalvalue
+    print "HIGHEST:", highestValue
+
+    visualizeArea(houses)
 
 def repeatHillClimber(runs):
     value60 = []
@@ -561,6 +624,7 @@ def repeatHillClimber(runs):
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
+
 '''Uncomment algorithm you want to execute'''
 # Initialize random configuration
 #initializeSimulation(9, 15, 36, 300, 320)
@@ -569,8 +633,13 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-randomAlgorithm(1)
+#randomAlgorithm(30)
+
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+#hillClimber(200, 20)
 
 #repeatHillClimber(1000)
+
+# Variant, T, T_min, alpha
+#simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
