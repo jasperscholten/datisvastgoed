@@ -13,6 +13,7 @@ if len(sys.argv) == 3:
     print sys.argv[2]
 else:
     print "Provide 2 command line arguments, format: python test.py 'algorithm' 'variant'"
+    response = raw_input("Please enter your name: ")
 
 '''
 def printXY(old, new, T):

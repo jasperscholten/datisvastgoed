@@ -5,6 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
 import csv
+import sys
 
 variantArray = []
 totalvalueArray = []
@@ -697,13 +698,43 @@ def repeatHillClimber(runs):
 #initializeSimulation(3, 5, 12, 300, 320)
 #initializeSimulation(2, 1, 1, 300, 320)
 
-# fill in how many times you want to execute this algorithm
-randomAlgorithm(100)
+print "\nWhat algoritm do you want to execute?"
+print "Type 1 for Random Algorithm"
+print "Type 2 for Hillclimber for one field"
+print "Type 3 for Repeated Hillclimber"
+print "Type 4 for Simulated Annealing"
+algorithm = int(raw_input("Type: "))
+print algorithm
 
-# 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+if algorithm == 1:
+    print "\nHow many times do you want to execute the algorithm?"
+    runs = int(raw_input("Number of runs: "))
 
-# hillClimber(200, 20)
-#repeatHillClimber(2)
+    print "\nRANDOM"
+    # fill in how many times you want to execute this algorithm
+    randomAlgorithm(runs)
 
-# Variant, T, T_min, alpha
-#simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+elif algorithm == 2:
+    variant = 0
+    while variant != 20 and variant != 40 and variant != 60:
+        print "\nWhat variant do you want to climb?"
+        variant = int(raw_input("Type 20, 40 or 60: "))
+
+    print "\nWhat is the maximum amount of moves you want to make?"
+    moves = int(raw_input("Moves: "))
+
+    print "\nHILLCLIMBER"
+    # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+    hillClimber(moves, variant)
+
+elif algorithm == 3:
+    print "\nHow many times do you want to execute the algorithm?"
+    runs = int(raw_input("Number of runs: "))
+
+    print "\nREPEATED HILLCLIMBER"
+    repeatHillClimber(runs)
+
+else:
+    print "\nSIMULATED ANNEALING"
+    # Variant, T, T_min, alpha
+    simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
