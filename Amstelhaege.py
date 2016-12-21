@@ -363,8 +363,8 @@ def createArrays(variant, totalvalue, vrijstand, waterPieces, waterarea):
     waterPiecesArray.append(waterPieces)
     waterareaArray.append(waterarea)
 
-def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows):
-    f = open("datisvastgoed\data.csv", 'wb')
+def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows, algorithm):
+    f = open("datisvastgoed\data_%s.csv" % algorithm, 'wb')
 
     writer = csv.writer(f)
     writer.writerow(('variant', 'Totalvalue', 'Vrijstand', 'waterPieces', 'waterarea'))
@@ -484,20 +484,32 @@ def randomAlgorithm(runs):
     value60 = []
     value40 = []
     value20 = []
+    highestValue60 = 0
+    highestValue40 = 0
+    highestValue20 = 0
 
     for i in range(runs):
         result = initializeSimulation(9, 15, 36, 300, 320)
         value60.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue60:
+            highestValue60 = result['totalvalue']
+            highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         result = initializeSimulation(6, 10, 24, 300, 320)
         value40.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue40:
+            highestValue40 = result['totalvalue']
+            highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         result = initializeSimulation(3, 5, 12, 300, 320)
         value20.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue20:
+            highestValue20 = result['totalvalue']
+            highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print i
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "randomalgorithm")
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -536,6 +548,8 @@ def hillClimber(maxMoves, variant):
     egws = int(variant * 0.6)
 
     result = initializeSimulation(mais, bung, egws, 300, 320)
+    waterPieces = result['waterPieces']
+    waterarea = result['waterarea']
     houses = result['houses']
     totalvalue = result['totalvalue']
     moves = ConstructionSite(300, 320)
@@ -587,68 +601,48 @@ def hillClimber(maxMoves, variant):
     plt.plot(numberIterationsArray,totalvalueArray)
     plt.xlabel('number Iterations')
     plt.ylabel('total value')
-    plt.show()
+    #plt.show()
 
     finalArea = ConstructionSite(300, 320)
+    totalvalue = moves.totalValue(houses, 0)
+    vrijstand = moves.totalValue(houses, 1)
 
 
-    return {'totalvalue': totalvalue}
-
-#http://katrinaeg.com/simulated-annealing.html
-def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
-    mais = int(variant * 0.15)
-    bung = int(variant * 0.25)
-    egws = int(variant * 0.6)
-
-    initialResult = initializeSimulation(mais, bung, egws, 300, 320)
-    houses = initialResult['houses']
-    totalvalue = initialResult['totalvalue']
-    highestValue = totalvalue
-    oldCost = totalvalue/100000.0
-    moves = ConstructionSite(300, 320)
-
-    print "INITIAL:", totalvalue
-
-    while T > T_min:
-        iteration = 1
-        while iteration <= maxIterations:
-            pick = moves.pickHouseSA(mais, bung, egws)
-            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
-            newHouses = result['houses']
-            newTotalValue = result['totalvalue']
-            newCost = newTotalValue/100000.0
-            ap = moves.acceptanceProbability(oldCost, newCost, T)
-
-            if ap > random.random():
-                houses = newHouses
-                totalvalue = newTotalValue
-                oldCost = newCost
-
-                if totalvalue > highestValue:
-                    highestValue = totalvalue
-            iteration += 1
-        print T, totalvalue
-        T = T*alpha
-
-    print "FINAL:", totalvalue
-    print "HIGHEST:", highestValue
-
-    visualizeArea(houses)
+    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
 def repeatHillClimber(runs):
     value60 = []
     value40 = []
     value20 = []
+    highestValue60 = 0
+    highestValue40 = 0
+    highestValue20 = 0
 
     for i in range(runs):
         print i
         print "60 variant"
-        value60.append(hillClimber(200, 60)['totalvalue'])
+        result = hillClimber(200, 60)
+        value60.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue60:
+            highestValue60 = result['totalvalue']
+            highestHouses60 = result['houses']
+        createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        value40.append(hillClimber(200, 40)['totalvalue'])
+        result = hillClimber(200, 40)
+        value40.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue40:
+            highestValue40 = result['totalvalue']
+            highestHouses40 = result['houses']
+        createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        value20.append(hillClimber(200, 20)['totalvalue'])
+        result = hillClimber(200, 20)
+        value20.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue20:
+            highestValue20 = result['totalvalue']
+            highestHouses20 = result['houses']
+        createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "hillclimberalgorithm")
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -691,12 +685,126 @@ def repeatHillClimber(runs):
     plt.ylabel("Frequency")
     plt.show()
 
-'''Uncomment algorithm you want to execute'''
-# Initialize random configuration
-#initializeSimulation(9, 15, 36, 300, 320)
-#initializeSimulation(6, 10, 24, 300, 320)
-#initializeSimulation(3, 5, 12, 300, 320)
-#initializeSimulation(2, 1, 1, 300, 320)
+#http://katrinaeg.com/simulated-annealing.html
+def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
+    mais = int(variant * 0.15)
+    bung = int(variant * 0.25)
+    egws = int(variant * 0.6)
+
+    initialResult = initializeSimulation(mais, bung, egws, 300, 320)
+    houses = initialResult['houses']
+    totalvalue = initialResult['totalvalue']
+    waterPieces = initialResult['waterPieces']
+    waterarea = initialResult['waterarea']
+    highestValue = totalvalue
+    oldCost = totalvalue/100000.0
+    moves = ConstructionSite(300, 320)
+
+    print "INITIAL:", totalvalue
+
+    while T > T_min:
+        iteration = 1
+        while iteration <= maxIterations:
+            pick = moves.pickHouseSA(mais, bung, egws)
+            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
+            newHouses = result['houses']
+            newTotalValue = result['totalvalue']
+            newCost = newTotalValue/100000.0
+            ap = moves.acceptanceProbability(oldCost, newCost, T)
+
+            if ap > random.random():
+                houses = newHouses
+                totalvalue = newTotalValue
+                oldCost = newCost
+
+                if totalvalue > highestValue:
+                    highestValue = totalvalue
+            iteration += 1
+        print T, totalvalue
+        T = T*alpha
+
+    vrijstand = moves.totalValue(houses, 1)
+    print "FINAL:", totalvalue
+    print "HIGHEST:", highestValue
+
+    visualizeArea(houses)
+
+    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
+
+def repeatSimulatedAnnealing(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+    highestValue60 = 0
+    highestValue40 = 0
+    highestValue20 = 0
+
+    for i in range(runs):
+        print i
+        print "60 variant"
+        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50)
+        value60.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue60:
+            highestValue60 = result['totalvalue']
+            highestHouses60 = result['houses']
+        createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        print "40 variant"
+        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50)
+        value40.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue40:
+            highestValue40 = result['totalvalue']
+            highestHouses40 = result['houses']
+        createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        print "20 variant"
+        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+        value20.append(result['totalvalue'])
+        if result['totalvalue'] > highestValue20:
+            highestValue20 = result['totalvalue']
+            highestHouses20 = result['houses']
+        createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "simulatedAnnealingalgorithm")
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value40
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value60
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
 
 print "\nWhat algoritm do you want to execute?"
 print "Type 1 for Random Algorithm"
