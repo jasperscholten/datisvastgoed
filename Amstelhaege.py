@@ -604,18 +604,28 @@ def repeatHillClimber(runs):
     print "Average total value 60:", sum(value60)/float(len(value60))
 
     #https://plot.ly/matplotlib/histograms/
+    print value20
     plt.hist(value20)
     plt.title("Average total value 20-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value40
     plt.hist(value40)
     plt.title("Average total value 40-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value60
     plt.hist(value60)
     plt.title("Average total value 60-houses")
     plt.xlabel("Monetary value")
@@ -642,7 +652,8 @@ randomAlgorithm(1000)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 #hillClimber(200, 20)
-#repeatHillClimber(2)
+
+#repeatHillClimber(1000)
 
 # Variant, T, T_min, alpha
 #simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
