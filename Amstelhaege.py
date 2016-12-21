@@ -632,13 +632,14 @@ def repeatHillClimber(runs):
     value20 = []
 
     for i in range(runs):
+        print i
         print "60 variant"
         value60.append(hillClimber(200, 60)['totalvalue'])
         print "40 variant"
         value40.append(hillClimber(200, 40)['totalvalue'])
         print "20 variant"
         value20.append(hillClimber(200, 20)['totalvalue'])
-        print i
+
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
