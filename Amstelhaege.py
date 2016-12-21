@@ -376,6 +376,7 @@ def initializeSimulation(mais, bung, egws, width, height):
         houses[2]["singlefamily{0}".format(i)][1] = area.getVrijstand(houses[2]["singlefamily{0}".format(i)], houses, 2)
         houses[2]["singlefamily{0}".format(i)][0] = area.calculateValue(2, houses[2]["singlefamily{0}".format(i)][1])
 
+    print houses 
     # calculate total value of area
     totalvalue = area.totalValue(houses)
 
@@ -525,18 +526,28 @@ def repeatHillClimber(runs):
     print "Average total value 60:", sum(value60)/float(len(value60))
 
     #https://plot.ly/matplotlib/histograms/
+    print value20
     plt.hist(value20)
     plt.title("Average total value 20-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value40
     plt.hist(value40)
     plt.title("Average total value 40-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value60
     plt.hist(value60)
     plt.title("Average total value 60-houses")
     plt.xlabel("Monetary value")
@@ -558,8 +569,8 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-#randomAlgorithm(1)
+randomAlgorithm(1)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 
-repeatHillClimber(20)
+#repeatHillClimber(1000)
