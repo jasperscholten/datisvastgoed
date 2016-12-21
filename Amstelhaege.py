@@ -3,6 +3,11 @@ import random
 import math
 import matplotlib.pyplot as plt
 from copy import deepcopy
+import xlwt
+from tempfile import TemporaryFile
+
+waterPiecesArray = []
+waterRatioArray = []
 
 class ConstructionSite(object):
     """
@@ -343,6 +348,45 @@ def visualizeArea(houses):
     plt.imshow(area.area)
     plt.show()
 
+def createExcel(waterPieces, waterRatio):
+    """
+    create an Excel file for the amount of water pieces in the simulations.
+    """
+
+
+
+    waterPiecesArray.append(waterPieces)
+    waterRatioArray.append(waterRatio)
+    print(waterPiecesArray, waterRatioArray)
+
+
+
+    # path='waterPieces.txt'
+
+#     waterPieces.append(waterPieces)
+#     waterRatio.append(waterRatio)
+#
+# with open('waterPieces, waterRatio','w') as table:
+#     for row in table(waterPieces, waterRatio):
+#         for cell in row:
+#             table.write(str(cell) + '\t')
+#         table.write('\n')
+
+def createBestand(waterPiecesArray, waterRatioArray):
+
+    book = xlwt.Workbook()
+    sheet1 = book.add_sheet('sheet1')
+    data = [waterPiecesArray, waterRatioArray]
+
+    for row, array in enumerate(data):
+        for col, value in enumerate(array):
+            sheet1.write(row, col, value)
+
+    name = "waterPieces, waterRatio.xls"
+    book.save(name)
+    book.save(TemporaryFile())
+
+
 def initializeSimulation(mais, bung, egws, width, height):
     """
     run the simulation.
@@ -431,7 +475,11 @@ def initializeSimulation(mais, bung, egws, width, height):
     #plt.imshow(area.area)
     #plt.show()
 
+
+    createExcel(waterPieces, waterRatio)
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
+
+
 
 def randomAlgorithm(runs):
     value60 = []
@@ -443,6 +491,8 @@ def randomAlgorithm(runs):
         value40.append(initializeSimulation(6, 10, 24, 300, 320)['totalvalue'])
         value20.append(initializeSimulation(3, 5, 12, 300, 320)['totalvalue'])
         print i
+
+    createBestand(waterPiecesArray, waterRatioArray)
 
     print "Average total value 20:", sum(value20)/float(len(value20))
     print "Average total value 40:", sum(value40)/float(len(value40))
@@ -525,7 +575,17 @@ def hillClimber(maxMoves, variant):
     plt.ylabel('Total value')
     #plt.show()
 
+
     #visualizeArea(houses)
+
+    print numberIterationsArray, totalvalueArray
+    plt.plot(numberIterationsArray,totalvalueArray)
+    plt.xlabel('number Iterations')
+    plt.ylabel('total value')
+    plt.show()
+
+    finalArea = ConstructionSite(300, 320)
+
 
     return {'totalvalue': totalvalue}
 
@@ -622,10 +682,11 @@ def repeatHillClimber(runs):
 #initializeSimulation(2, 1, 1, 300, 320)
 
 # fill in how many times you want to execute this algorithm
-#randomAlgorithm(30)
+randomAlgorithm(4)
 
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
-hillClimber(200, 20)
+
+# hillClimber(200, 20)
 #repeatHillClimber(2)
 
 # Variant, T, T_min, alpha
