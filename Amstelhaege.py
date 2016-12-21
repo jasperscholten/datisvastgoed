@@ -597,47 +597,6 @@ def hillClimber(maxMoves, variant):
 
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea}
 
-#http://katrinaeg.com/simulated-annealing.html
-def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
-    mais = int(variant * 0.15)
-    bung = int(variant * 0.25)
-    egws = int(variant * 0.6)
-
-    initialResult = initializeSimulation(mais, bung, egws, 300, 320)
-    houses = initialResult['houses']
-    totalvalue = initialResult['totalvalue']
-    highestValue = totalvalue
-    oldCost = totalvalue/100000.0
-    moves = ConstructionSite(300, 320)
-
-    print "INITIAL:", totalvalue
-
-    while T > T_min:
-        iteration = 1
-        while iteration <= maxIterations:
-            pick = moves.pickHouseSA(mais, bung, egws)
-            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
-            newHouses = result['houses']
-            newTotalValue = result['totalvalue']
-            newCost = newTotalValue/100000.0
-            ap = moves.acceptanceProbability(oldCost, newCost, T)
-
-            if ap > random.random():
-                houses = newHouses
-                totalvalue = newTotalValue
-                oldCost = newCost
-
-                if totalvalue > highestValue:
-                    highestValue = totalvalue
-            iteration += 1
-        print T, totalvalue
-        T = T*alpha
-
-    print "FINAL:", totalvalue
-    print "HIGHEST:", highestValue
-
-    visualizeArea(houses)
-
 def repeatHillClimber(runs):
     value60 = []
     value40 = []
@@ -701,6 +660,118 @@ def repeatHillClimber(runs):
     plt.ylabel("Frequency")
     plt.show()
 
+#http://katrinaeg.com/simulated-annealing.html
+def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
+    mais = int(variant * 0.15)
+    bung = int(variant * 0.25)
+    egws = int(variant * 0.6)
+
+    initialResult = initializeSimulation(mais, bung, egws, 300, 320)
+    houses = initialResult['houses']
+    totalvalue = initialResult['totalvalue']
+    waterPieces = initialResult['waterPieces']
+    waterarea = initialResult['waterarea']
+    highestValue = totalvalue
+    oldCost = totalvalue/100000.0
+    moves = ConstructionSite(300, 320)
+
+    print "INITIAL:", totalvalue
+
+    while T > T_min:
+        iteration = 1
+        while iteration <= maxIterations:
+            pick = moves.pickHouseSA(mais, bung, egws)
+            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
+            newHouses = result['houses']
+            newTotalValue = result['totalvalue']
+            newCost = newTotalValue/100000.0
+            ap = moves.acceptanceProbability(oldCost, newCost, T)
+
+            if ap > random.random():
+                houses = newHouses
+                totalvalue = newTotalValue
+                oldCost = newCost
+
+                if totalvalue > highestValue:
+                    highestValue = totalvalue
+            iteration += 1
+        print T, totalvalue
+        T = T*alpha
+
+    vrijstand = moves.totalValue(houses, 1)
+    print "FINAL:", totalvalue
+    print "HIGHEST:", highestValue
+
+    visualizeArea(houses)
+
+    return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea}
+
+def repeatSimulatedAnnealing(runs):
+    value60 = []
+    value40 = []
+    value20 = []
+
+    for i in range(runs):
+        print i
+        print "60 variant"
+        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50)
+        value60.append(result['totalvalue'])
+        createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        print "40 variant"
+        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50)
+        value40.append(result['totalvalue'])
+        createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        print "20 variant"
+        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+        value20.append(result['totalvalue'])
+        createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3)
+
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value40
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value60
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+
+
+
 '''Uncomment algorithm you want to execute'''
 # Initialize random configuration
 #initializeSimulation(9, 15, 36, 300, 320)
@@ -714,7 +785,8 @@ def repeatHillClimber(runs):
 # 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
 
 # hillClimber(200, 20)
-repeatHillClimber(6)
+#repeatHillClimber(6)
 
 # Variant, T, T_min, alpha
 #simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+repeatSimulatedAnnealing(1)
