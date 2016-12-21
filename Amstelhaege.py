@@ -1,6 +1,7 @@
 import numpy
 import random
 import math
+import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
 import xlwt
@@ -353,24 +354,9 @@ def createExcel(waterPieces, waterRatio):
     create an Excel file for the amount of water pieces in the simulations.
     """
 
-
-
     waterPiecesArray.append(waterPieces)
     waterRatioArray.append(waterRatio)
     print(waterPiecesArray, waterRatioArray)
-
-
-
-    # path='waterPieces.txt'
-
-#     waterPieces.append(waterPieces)
-#     waterRatio.append(waterRatio)
-#
-# with open('waterPieces, waterRatio','w') as table:
-#     for row in table(waterPieces, waterRatio):
-#         for cell in row:
-#             table.write(str(cell) + '\t')
-#         table.write('\n')
 
 def createBestand(waterPiecesArray, waterRatioArray):
 
@@ -386,19 +372,12 @@ def createBestand(waterPiecesArray, waterRatioArray):
     book.save(name)
     book.save(TemporaryFile())
 
-
-def initializeSimulation(mais, bung, egws, width, height):
-    """
-    run the simulation.
-    """
-    area = ConstructionSite(width, height)
-    waterPieces = random.randint(1,4)
-
-    amountWater = 19200
-    houses = area.createVariables(waterPieces, mais, bung, egws)
+def createField(area, waterPieces, houses, mais, bung, egws, width, height):
+    timer = time.time() + 2
 
     # build right amount of water pieces
     counter = 1
+    amountWater = 19200
     waterLength = 0
     waterWidth = 0
     while counter <= waterPieces:
@@ -455,6 +434,26 @@ def initializeSimulation(mais, bung, egws, width, height):
             area.buildWoning(x_pos, x_pos + 16, y_pos, y_pos + 16, 3)
             houses[2]["singlefamily{0}".format(counter)] = area.savePositions(x_pos, y_pos, 16, 16)
             counter += 1
+        if time.time() > timer:
+            print 'restart'
+            return 'start'
+
+    return {'area': area, 'houses': houses}
+
+def initializeSimulation(mais, bung, egws, width, height):
+    """
+    run the simulation.
+    """
+
+    result = 'start'
+    while result == 'start':
+        area = ConstructionSite(width, height)
+        waterPieces = random.randint(1,4)
+        houses = area.createVariables(waterPieces, mais, bung, egws)
+        result = createField(area, waterPieces, houses, mais, bung, egws, width, height)
+
+    area = result['area']
+    houses = result['houses']
 
     # calculateVrijstand and calculateValue for maison
     for i in range(mais):
@@ -475,11 +474,8 @@ def initializeSimulation(mais, bung, egws, width, height):
     #plt.imshow(area.area)
     #plt.show()
 
-
     createExcel(waterPieces, waterRatio)
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area}
-
-
 
 def randomAlgorithm(runs):
     value60 = []
@@ -589,6 +585,7 @@ def hillClimber(maxMoves, variant):
 
     return {'totalvalue': totalvalue}
 
+#http://katrinaeg.com/simulated-annealing.html
 def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
     mais = int(variant * 0.15)
     bung = int(variant * 0.25)
@@ -648,18 +645,28 @@ def repeatHillClimber(runs):
     print "Average total value 60:", sum(value60)/float(len(value60))
 
     #https://plot.ly/matplotlib/histograms/
+    print value20
     plt.hist(value20)
     plt.title("Average total value 20-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value20
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    print value40
     plt.hist(value40)
     plt.title("Average total value 40-houses")
     plt.xlabel("Monetary value")
     plt.ylabel("Frequency")
     plt.show()
 
+    print value60
     plt.hist(value60)
     plt.title("Average total value 60-houses")
     plt.xlabel("Monetary value")
