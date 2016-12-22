@@ -13,6 +13,8 @@ Met behulp van dit programma is het mogelijk om huizen op een bepaalde oppervlak
 
 ## Het runnen van het programma
 De repository datisvastgoed bevat het programma genaamd Amstelhaege.py. Door in de terminal naar de map datisvastgoed te gaan, kan het programma gerund worden door python Amstelhaege.py aan te roepen. 
+![Image of my screenshot]
+(/startScreen.png)
 
 ## Gemaakt met
 Atom (Python)
