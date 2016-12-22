@@ -625,27 +625,32 @@ def repeatHillClimber(runs, filename, optim):
     highestValue40 = 0
     highestValue20 = 0
 
+    if optim == 0:
+        choose = 'totalvalue'
+    else:
+        choose = 'vrijstand'
+
     for i in range(runs):
         print i
         print "60 variant"
         result = hillClimber(200, 60, 'no', optim)
-        value60.append(result['totalvalue'])
-        if result['totalvalue'] > highestValue60:
-            highestValue60 = result['totalvalue']
+        value60.append(result[choose])
+        if result[choose] > highestValue60:
+            highestValue60 = result[choose]
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
         result = hillClimber(200, 40, 'no', optim)
-        value40.append(result['totalvalue'])
-        if result['totalvalue'] > highestValue40:
-            highestValue40 = result['totalvalue']
+        value40.append(result[choose])
+        if result[choose] > highestValue40:
+            highestValue40 = result[choose]
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
         result = hillClimber(200, 20, 'no', optim)
-        value20.append(result['totalvalue'])
-        if result['totalvalue'] > highestValue20:
-            highestValue20 = result['totalvalue']
+        value20.append(result[choose])
+        if result[choose] > highestValue20:
+            highestValue20 = result[choose]
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, (i + 1) * 3, filename)
