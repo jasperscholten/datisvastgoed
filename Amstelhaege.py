@@ -691,7 +691,7 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
                 if totalvalue > highestValue:
                     highestValue = totalvalue
             iteration += 1
-        print T
+        #print T
         T = T*alpha
 
     vrijstand = moves.totalValue(houses, 1)
@@ -734,8 +734,8 @@ def repeatSimulatedAnnealing(runs, filename):
             highestValue20 = result['totalvalue']
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, (i+1) * 3, filename)
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
     saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
 
     plt.hist(value20)

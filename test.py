@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 import sys
 
-print 'Number of arguments:', len(sys.argv), 'arguments.'
+'''print 'Number of arguments:', len(sys.argv), 'arguments.'
 print 'Argument List:', str(sys.argv)
 
 if len(sys.argv) == 3:
@@ -17,10 +17,10 @@ else:
 
 '''
 def printXY(old, new, T):
-    return math.e ** ((float(old) - float(new))/float(T))
-
+    #return math.e ** ((float(old) - float(new))/float(T))
+    return old
 for i in range(20):
-    print printXY(16100000, 16000000, 0.9)
+    print printXY((i+1) * 3, 16000000, 0.9)
 
 print math.e
 
@@ -34,7 +34,7 @@ def moveHouseSA(self, variant, houses, type_string, i, fieldvalue, type):
         fieldvalue_move = self.totalValue(houses_move)
 
     return {'houses': houses_move, 'totalvalue': fieldvalue_move}
-'''
+
 
 
 
