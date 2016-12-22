@@ -833,7 +833,6 @@ def runProgram():
             runs = integerInput("Number of runs: ")
         print "\nREPEATED SIMULATED ANNEALING"
         repeatSimulatedAnnealing(runs, filename)
-
     else:
         print "\n ### Choose a valid type ###"
         runProgram()
