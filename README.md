@@ -17,7 +17,7 @@ De repository datisvastgoed bevat het programma genaamd Amstelhaege.py. Door in 
 ![Image of my screenshot]
 (/startScreen.png)
 
-## Gemaakt met
+## Gemaakt met behulp van
 Atom (Python)
 
 ## Logboek
