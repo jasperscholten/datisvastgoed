@@ -677,7 +677,7 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
         iteration = 1
         while iteration <= maxIterations:
             pick = moves.pickHouseSA(mais, bung, egws)
-            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
+            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'], optimalisatietype)
             newHouses = result['houses']
             newTotalValue = result['totalvalue']
             newCost = newTotalValue/100000.0
