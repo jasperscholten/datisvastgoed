@@ -1,3 +1,6 @@
+![Het logo]
+(/Afbeeldingen/datisvastgoedLogo.png)
+
 # Readme Amstelhaege case bij heuristieken
 ## Groep Datis Vastgoed B.V.
 Nadav Baruch - 11427353</br>
@@ -14,8 +17,8 @@ Met behulp van dit programma is het mogelijk om huizen op een bepaalde oppervlak
 ## Het runnen van het programma
 De repository datisvastgoed bevat het programma genaamd Amstelhaege.py. Door in de terminal naar de map datisvastgoed te gaan, kan het programma gerund worden door python Amstelhaege.py aan te roepen. Hierna verschijnt het volgende.
 
-![Image of my screenshot]
-(/startScreen.png)
+![Screenshot van het startscherm]
+(/Afbeeldingen/startScreen.png)
 
 ## Gemaakt met behulp van
 Atom (Python)
