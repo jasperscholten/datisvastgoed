@@ -5,6 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from copy import deepcopy
 import csv
+import sys
 
 variantArray = []
 totalvalueArray = []
@@ -252,38 +253,35 @@ class ConstructionSite(object):
 
             return housesCopy
 
-    '''
-    Moet ingekort worden.
-    '''
-    def moveHouse(self, variant, houses, type_string, i, fieldvalue, type):
+    def moveHouse(self, variant, houses, type_string, i, fieldvalue, type, optimalisatietype):
 
     # move 1m up
         houses_up = self.calculateProvisionalValue(variant, houses, type, type_string, 3, i, -2)
         if houses_up == "invalid move":
             fieldvalue_up = 0
         else:
-            fieldvalue_up = self.totalValue(houses_up, 0)
+            fieldvalue_up = self.totalValue(houses_up, optimalisatietype)
 
     # move 1m down
         houses_dwn = self.calculateProvisionalValue(variant, houses, type, type_string, 3, i, 2)
         if houses_dwn == "invalid move":
             fieldvalue_dwn = 0
         else:
-            fieldvalue_dwn = self.totalValue(houses_dwn, 0)
+            fieldvalue_dwn = self.totalValue(houses_dwn, optimalisatietype)
 
     # move 1m to left
         houses_lft = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, -2)
         if houses_lft == "invalid move":
             fieldvalue_lft = 0
         else:
-            fieldvalue_lft = self.totalValue(houses_lft, 0)
+            fieldvalue_lft = self.totalValue(houses_lft, optimalisatietype)
 
     # move 1m to right
         houses_rght = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, 2)
         if houses_rght == "invalid move":
             fieldvalue_rght = 0
         else:
-            fieldvalue_rght = self.totalValue(houses_rght, 0)
+            fieldvalue_rght = self.totalValue(houses_rght, optimalisatietype)
 
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
@@ -362,8 +360,8 @@ def createArrays(variant, totalvalue, vrijstand, waterPieces, waterarea):
     waterPiecesArray.append(waterPieces)
     waterareaArray.append(waterarea)
 
-def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows, algorithm):
-    f = open("datisvastgoed\data_%s.csv" % algorithm, 'wb')
+def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, rows, filename):
+    f = open("datisvastgoed\%s.csv" % filename, 'wb')
 
     writer = csv.writer(f)
     writer.writerow(('variant', 'Totalvalue', 'Vrijstand', 'waterPieces', 'waterarea'))
@@ -371,6 +369,42 @@ def createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray,
         writer.writerow((variantArray[i], totalvalueArray[i], vrijstandArray[i], waterPiecesArray[i], waterareaArray[i]))
     f.close
 
+def saveHighest(houses20, houses40, houses60, value20, value40, value60, filename):
+    text_file = open("datisvastgoed\%s.txt" % filename, "w")
+    text_file.writelines(["20 houses:", "\n", str(value20), "\n", str(houses20), "\n", "40 houses:", "\n", str(value40), "\n", str(houses40), "\n", "60 houses:", "\n", str(value60), "\n", str(houses60)])
+    text_file.close()
+
+def printHistogram(value20, value40, value60):
+    print "Average total value 20:", sum(value20)/float(len(value20))
+    print "Average total value 40:", sum(value40)/float(len(value40))
+    print "Average total value 60:", sum(value60)/float(len(value60))
+
+    #https://plot.ly/matplotlib/histograms/
+    plt.hist(value20)
+    plt.title("Average total value 20-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value40)
+    plt.title("Average total value 40-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value60)
+    plt.title("Average total value 60-houses")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
+
+    plt.hist(value20)
+    plt.hist(value40)
+    plt.hist(value60)
+    plt.title("Average total value")
+    plt.xlabel("Monetary value")
+    plt.ylabel("Frequency")
+    plt.show()
 
 def createField(area, waterPieces, houses, mais, bung, egws, width, height):
     timer = time.time() + 2
@@ -479,7 +513,7 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': result['waterarea'] }
 
-def randomAlgorithm(runs):
+def randomAlgorithm(runs, filename):
     value60 = []
     value40 = []
     value20 = []
@@ -508,40 +542,11 @@ def randomAlgorithm(runs):
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print i
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "randomalgorithm")
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
+    saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
+    printHistogram(value20, value40, value60)
 
-    print "Average total value 20:", sum(value20)/float(len(value20))
-    print "Average total value 40:", sum(value40)/float(len(value40))
-    print "Average total value 60:", sum(value60)/float(len(value60))
-
-    #https://plot.ly/matplotlib/histograms/
-    plt.hist(value20)
-    plt.title("Average total value 20-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    plt.hist(value40)
-    plt.title("Average total value 40-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    plt.hist(value60)
-    plt.title("Average total value 60-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    plt.hist(value20)
-    plt.hist(value40)
-    plt.hist(value60)
-    plt.title("Average total value")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-def hillClimber(maxMoves, variant):
+def hillClimber(maxMoves, variant, visualize, optimalisatietype):
     mais = int(variant * 0.15)
     bung = int(variant * 0.25)
     egws = int(variant * 0.6)
@@ -564,15 +569,15 @@ def hillClimber(maxMoves, variant):
         oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
-            result = moves.moveHouse(variant, houses, "maison{0}", i, totalvalue, 0)
+            result = moves.moveHouse(variant, houses, "maison{0}", i, totalvalue, 0, optimalisatietype)
             houses = result['houses']
             totalvalue = result['totalvalue']
         for i in range(bung):
-            result = moves.moveHouse(variant, houses, "bungalow{0}", i, totalvalue, 1)
+            result = moves.moveHouse(variant, houses, "bungalow{0}", i, totalvalue, 1, optimalisatietype)
             houses = result['houses']
             totalvalue = result['totalvalue']
         for i in range(egws):
-            result = moves.moveHouse(variant, houses, "singlefamily{0}", i, totalvalue, 2)
+            result = moves.moveHouse(variant, houses, "singlefamily{0}", i, totalvalue, 2, optimalisatietype)
             houses = result['houses']
             totalvalue = result['totalvalue']
 
@@ -593,23 +598,22 @@ def hillClimber(maxMoves, variant):
     plt.ylabel('Total value')
     #plt.show()
 
+    if visualize == 'yes':
+        visualizeArea(houses)
 
-    #visualizeArea(houses)
-
-    print numberIterationsArray, totalvalueArray
-    plt.plot(numberIterationsArray,totalvalueArray)
-    plt.xlabel('number Iterations')
-    plt.ylabel('total value')
-    #plt.show()
+        #print numberIterationsArray, totalvalueArray
+        plt.plot(numberIterationsArray,totalvalueArray)
+        plt.xlabel('number Iterations')
+        plt.ylabel('total value')
+        plt.show()
 
     finalArea = ConstructionSite(300, 320)
     totalvalue = moves.totalValue(houses, 0)
     vrijstand = moves.totalValue(houses, 1)
 
-
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
-def repeatHillClimber(runs):
+def repeatHillClimber(runs, filename, optimalisatietype):
     value60 = []
     value40 = []
     value20 = []
@@ -620,72 +624,40 @@ def repeatHillClimber(runs):
     for i in range(runs):
         print i
         print "60 variant"
-        result = hillClimber(200, 60)
+        result = hillClimber(200, 60, 'no', optimalisatietype)
         value60.append(result['totalvalue'])
         if result['totalvalue'] > highestValue60:
             highestValue60 = result['totalvalue']
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = hillClimber(200, 40)
+        result = hillClimber(200, 40, 'no', optimalisatietype)
         value40.append(result['totalvalue'])
         if result['totalvalue'] > highestValue40:
             highestValue40 = result['totalvalue']
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = hillClimber(200, 20)
+        result = hillClimber(200, 20, 'no', optimalisatietype)
         value20.append(result['totalvalue'])
         if result['totalvalue'] > highestValue20:
             highestValue20 = result['totalvalue']
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "hillclimberalgorithm")
-
-    print "Average total value 20:", sum(value20)/float(len(value20))
-    print "Average total value 40:", sum(value40)/float(len(value40))
-    print "Average total value 60:", sum(value60)/float(len(value60))
-
-    #https://plot.ly/matplotlib/histograms/
-    print value20
-    plt.hist(value20)
-    plt.title("Average total value 20-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value20
-    plt.hist(value20)
-    plt.title("Average total value 20-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value40
-    plt.hist(value40)
-    plt.title("Average total value 40-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value60
-    plt.hist(value60)
-    plt.title("Average total value 60-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
+    saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
 
     plt.hist(value20)
-    plt.hist(value40)
-    plt.hist(value60)
-    plt.title("Average total value")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
+    plt.title("Initializing Histogram")
+    plt.xlabel("Close for right Histograms")
+    plt.ylabel("")
     plt.show()
+
+    printHistogram(value20, value40, value60)
 
 #http://katrinaeg.com/simulated-annealing.html
-def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
+def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
     mais = int(variant * 0.15)
     bung = int(variant * 0.25)
     egws = int(variant * 0.6)
@@ -719,18 +691,19 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations):
                 if totalvalue > highestValue:
                     highestValue = totalvalue
             iteration += 1
-        print T, totalvalue
+        print T
         T = T*alpha
 
     vrijstand = moves.totalValue(houses, 1)
     print "FINAL:", totalvalue
     print "HIGHEST:", highestValue
 
-    visualizeArea(houses)
+    if visualize == 'yes':
+        visualizeArea(houses)
 
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
-def repeatSimulatedAnnealing(runs):
+def repeatSimulatedAnnealing(runs, filename):
     value60 = []
     value40 = []
     value20 = []
@@ -741,88 +714,115 @@ def repeatSimulatedAnnealing(runs):
     for i in range(runs):
         print i
         print "60 variant"
-        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(60, 1.0, 0.0002, 0.99, 50, 'no')
         value60.append(result['totalvalue'])
         if result['totalvalue'] > highestValue60:
             highestValue60 = result['totalvalue']
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(40, 1.0, 0.0002, 0.99, 50, 'no')
         value40.append(result['totalvalue'])
         if result['totalvalue'] > highestValue40:
             highestValue40 = result['totalvalue']
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
+        result = simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50, 'no')
         value20.append(result['totalvalue'])
         if result['totalvalue'] > highestValue20:
             highestValue20 = result['totalvalue']
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
 
-    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, "simulatedAnnealingalgorithm")
-
-    print "Average total value 20:", sum(value20)/float(len(value20))
-    print "Average total value 40:", sum(value40)/float(len(value40))
-    print "Average total value 60:", sum(value60)/float(len(value60))
-
-    #https://plot.ly/matplotlib/histograms/
-    print value20
-    plt.hist(value20)
-    plt.title("Average total value 20-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value20
-    plt.hist(value20)
-    plt.title("Average total value 20-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value40
-    plt.hist(value40)
-    plt.title("Average total value 40-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
-
-    print value60
-    plt.hist(value60)
-    plt.title("Average total value 60-houses")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
-    plt.show()
+    createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
+    saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
 
     plt.hist(value20)
-    plt.hist(value40)
-    plt.hist(value60)
-    plt.title("Average total value")
-    plt.xlabel("Monetary value")
-    plt.ylabel("Frequency")
+    plt.title("Initializing Histogram")
+    plt.xlabel("Close for right Histograms")
+    plt.ylabel("")
     plt.show()
 
+    printHistogram(value20, value40, value60)
 
+'''Algorithms'''
 
+def integerInput(text):
+    while True:
+        try:
+            integer = int(raw_input(text))
+        except ValueError:
+            print("\n ### Choose a valid integer as type ###\n")
+            continue
+        else:
+            return integer
 
-'''Uncomment algorithm you want to execute'''
-# Initialize random configuration
-#initializeSimulation(9, 15, 36, 300, 320)
-#initializeSimulation(6, 10, 24, 300, 320)
-#initializeSimulation(3, 5, 12, 300, 320)
-#initializeSimulation(2, 1, 1, 300, 320)
+def runProgram():
+    print "\n\n### AMSTELHAEGE - DATISVASTGOED B.V. ###\n\n"
+    print "What algorithm do you want to execute?"
+    print "Type 1 for Random Algorithm"
+    print "Type 2 for Hillclimber for one field"
+    print "Type 3 for repeated Hillclimber"
+    print "Type 4 for Simulated Annealing for one field"
+    print "Type 5 for repeated Simulated Annealing\n"
 
-# fill in how many times you want to execute this algorithm
-# randomAlgorithm(20)
+    algorithm = integerInput("Type: ")
 
-# 9, 15, 36 /// 6, 10, 24 /// 3, 5, 12
+    filename = "DEFAULT"
+    if algorithm == 1 or algorithm == 3 or algorithm == 5:
+        print "\nGive a filename of the resulting .CSV file"
+        filename = str(raw_input("Filename: "))
 
-# hillClimber(200, 20)
-repeatHillClimber(2)
+    if algorithm == 1:
+        print "\nHow many times do you want to execute the algorithm?"
+        runs = 0
+        while runs <= 0:
+            runs = integerInput("Number of runs: ")
+        print "\nRANDOM"
+        randomAlgorithm(runs, filename)
 
-# Variant, T, T_min, alpha
-#simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50)
-# repeatSimulatedAnnealing(1)
+    elif algorithm == 2:
+        variant = 0
+        while variant != 20 and variant != 40 and variant != 60:
+            print "\nWhat variant do you want to climb?"
+            variant = integerInput("Type 20, 40 or 60: ")
+        print "\nWhat is the maximum amount of moves you want to make?"
+        moves = 0
+        while moves <= 0:
+            moves = integerInput("Number of moves: ")
+        print "\nDo you want to see a visualization?"
+        visualize = raw_input("Type yes for visualization, else no visualization: ")
+        print "\nHILLCLIMBER"
+        hillClimber(moves, variant, visualize, optimalisatietype)
+
+    elif algorithm == 3:
+        print "\nHow many times do you want to execute the algorithm?"
+        runs = 0
+        while runs <= 0:
+            runs = integerInput("Number of runs: ")
+        print "\nREPEATED HILLCLIMBER"
+        repeatHillClimber(runs, filename)
+
+    elif algorithm == 4:
+        print "\nDo you want to see a visualization?"
+        visualize = raw_input("Type yes for visualization, else no visualization: ")
+        print "\nSIMULATED ANNEALING"
+        # variant, T, T_min, alpha, maxIterations, visualize
+        simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50, visualize)
+
+    elif algorithm == 5:
+        print "\nHow many times do you want to execute the algorithm?"
+        runs = 0
+        while runs <= 0:
+            runs = integerInput("Number of runs: ")
+        print "\nREPEATED SIMULATED ANNEALING"
+        repeatSimulatedAnnealing(runs, filename)
+
+    else:
+        print "\n ### Choose a valid type ###"
+        runProgram()
+
+    print ""
+
+runProgram()
