@@ -11,6 +11,9 @@ Het planologisch proces zal worden gebaseerd op een vernieuwend concept, waarin 
 ## Het programma
 Met behulp van dit programma is het mogelijk om huizen op een bepaalde oppervlakte te optimaliseren op twee doelen, namelijk op zo een groot mogelijke vrijstand en een zo hoog mogelijke prijs. Hoe dit bepaald wordt is terug te vinden in het verslag. Door middel van command-line arguments is het programma te runnen. Allereerst wordt gevraagd welke variant er gerund er dient te worden. Voor elke variant zijn er verschillende inputs van de gebruiker nodig, zoals de naam voor het .csv bestand, het aantal keer dat het programma moet runnen, of er een visualisatie wordt laten zien aan het eind en voorwaarden voor bepaalde varianten. 
 
+## Het runnen van het programma
+De repository datisvastgoed bevat het programma genaamd Amstelhaege.py. Door in de terminal naar de map datisvastgoed te gaan, kan het programma gerund worden door python Amstelhaege.py aan te roepen. 
+
 ## Gemaakt met
 Atom (Python)
 
