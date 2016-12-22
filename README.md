@@ -4,6 +4,11 @@ Nadav Baruch - 11427353</br>
 Jelle Mul - 11402148</br>
 Jasper Scholten - 11157887
 
+## Het programma
+Met behulp van dit programma is het mogelijk om huizen op een bepaalde oppervlakte te optimaliseren op twee doelen, namelijk op zo een groot mogelijke vrijstand en een zo hoog mogelijke prijs. Hoe dit bepaald wordt is terug te vinden in het verslag. Door middel van command-line arguments is het programma te runnen. Allereerst wordt gevraagd welke variant er gerund er dient te worden. Voor elke variant zijn er verschillende inputs van de gebruiker nodig, zoals de naam voor het .csv bestand, het aantal keer dat het programma moet runnen, of er een visualisatie wordt laten zien aan het eind en voorwaarden voor bepaalde varianten. 
+## Gemaakt met
+Atom (Python)
+
 ## Logboek
 **Week 1** - Voor ons eigen begrip een overzicht gemaakt van de case. Eerste regels code geschreven, waardoor een numpy array van de juiste grootte (maten van het veld) aangemaakt wordt; dit is de basis structuur waarop de huizen geplaatst kunnen worden. Daarnaast ook een manier van visualisatie gevonden en uitgetest (matplotlib.pyplot). Tevens contact gelegd met Wouter, onze code-interviseur.
 
