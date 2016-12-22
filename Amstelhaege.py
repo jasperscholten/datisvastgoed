@@ -512,7 +512,7 @@ def initializeSimulation(mais, bung, egws, width, height):
 
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': result['waterarea'] }
 
-def randomAlgorithm(runs, filename):
+def randomAlgorithm(runs, filename, visualize):
     value60 = []
     value40 = []
     value20 = []
@@ -544,6 +544,11 @@ def randomAlgorithm(runs, filename):
     createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
     saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
     printHistogram(value20, value40, value60)
+
+    if visualize == 'yes':
+        visualizeArea(highestHouses20)
+        visualizeArea(highestHouses40)
+        visualizeArea(highestHouses60)
 
 def hillClimber(maxMoves, variant, visualize, optim):
     mais = int(variant * 0.15)
@@ -597,18 +602,14 @@ def hillClimber(maxMoves, variant, visualize, optim):
 
     print "FINAL", totalvalue
 
-    plt.plot(numberIterationsArray,totalvalueArray)
-    plt.xlabel('Number of iterations')
-    plt.ylabel('Total value')
-    #plt.show()
-
     if visualize == 'yes':
         visualizeArea(houses)
 
         #print numberIterationsArray, totalvalueArray
         plt.plot(numberIterationsArray,totalvalueArray)
-        plt.xlabel('number Iterations')
-        plt.ylabel('total value')
+        plt.xlabel('Number of Iterations', fontsize=15)
+        plt.ylabel('Total field value', fontsize=15)
+        plt.suptitle('Field value - Iterations', fontsize=15)
         plt.show()
 
     finalArea = ConstructionSite(300, 320)
@@ -617,7 +618,7 @@ def hillClimber(maxMoves, variant, visualize, optim):
 
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
-def repeatHillClimber(runs, filename, optim):
+def repeatHillClimber(runs, filename, optim, visualize):
     value60 = []
     value40 = []
     value20 = []
@@ -633,21 +634,21 @@ def repeatHillClimber(runs, filename, optim):
     for i in range(runs):
         print i
         print "60 variant"
-        result = hillClimber(200, 60, 'no', optim)
+        result = hillClimber(200, 60, 'no',optim)
         value60.append(result[choose])
         if result[choose] > highestValue60:
             highestValue60 = result[choose]
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = hillClimber(200, 40, 'no', optim)
+        result = hillClimber(200, 40, 'no',optim)
         value40.append(result[choose])
         if result[choose] > highestValue40:
             highestValue40 = result[choose]
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = hillClimber(200, 20, 'no', optim)
+        result = hillClimber(200, 20, 'no',optim)
         value20.append(result[choose])
         if result[choose] > highestValue20:
             highestValue20 = result[choose]
@@ -661,6 +662,11 @@ def repeatHillClimber(runs, filename, optim):
     plt.xlabel("Close for right Histograms")
     plt.ylabel("")
     plt.show()
+
+    if visualize == 'yes':
+        visualizeArea(highestHouses20)
+        visualizeArea(highestHouses40)
+        visualizeArea(highestHouses60)
 
     printHistogram(value20, value40, value60)
 
@@ -711,7 +717,7 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
 
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
-def repeatSimulatedAnnealing(runs, filename):
+def repeatSimulatedAnnealing(runs, filename, visualize):
     value60 = []
     value40 = []
     value20 = []
@@ -751,6 +757,11 @@ def repeatSimulatedAnnealing(runs, filename):
     plt.ylabel("")
     plt.show()
 
+    if visualize == 'yes':
+        visualizeArea(highestHouses20)
+        visualizeArea(highestHouses40)
+        visualizeArea(highestHouses60)
+
     printHistogram(value20, value40, value60)
 
 '''Algorithms'''
@@ -786,8 +797,10 @@ def runProgram():
         runs = 0
         while runs <= 0:
             runs = integerInput("Number of runs: ")
+        print "\nDo you want to see a visualization?"
+        visualize = raw_input("Type yes for visualization, else no visualization: ")
         print "\nRANDOM"
-        randomAlgorithm(runs, filename)
+        randomAlgorithm(runs, filename, visualize)
 
     elif algorithm == 2:
         optim = 2
@@ -816,8 +829,10 @@ def runProgram():
         runs = 0
         while runs <= 0:
             runs = integerInput("Number of runs: ")
+        print "\nDo you want to see a visualization?"
+        visualize = raw_input("Type yes for visualization, else no visualization: ")
         print "\nREPEATED HILLCLIMBER"
-        repeatHillClimber(runs, filename, optim)
+        repeatHillClimber(runs, filename, optim, visualize)
 
     elif algorithm == 4:
         print "\nDo you want to see a visualization?"
@@ -831,8 +846,10 @@ def runProgram():
         runs = 0
         while runs <= 0:
             runs = integerInput("Number of runs: ")
+        print "\nDo you want to see a visualization?"
+        visualize = raw_input("Type yes for visualization, else no visualization: ")
         print "\nREPEATED SIMULATED ANNEALING"
-        repeatSimulatedAnnealing(runs, filename)
+        repeatSimulatedAnnealing(runs, filename, visualize)
     else:
         print "\n ### Choose a valid type ###"
         runProgram()
