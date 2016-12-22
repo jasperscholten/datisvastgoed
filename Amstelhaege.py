@@ -253,35 +253,34 @@ class ConstructionSite(object):
 
             return housesCopy
 
-    def moveHouse(self, variant, houses, type_string, i, fieldvalue, type, optimalisatietype):
-
+    def moveHouse(self, variant, houses, type_string, i, fieldvalue, type):
     # move 1m up
         houses_up = self.calculateProvisionalValue(variant, houses, type, type_string, 3, i, -2)
         if houses_up == "invalid move":
             fieldvalue_up = 0
         else:
-            fieldvalue_up = self.totalValue(houses_up, optimalisatietype)
+            fieldvalue_up = self.totalValue(houses_up, 0)
 
     # move 1m down
         houses_dwn = self.calculateProvisionalValue(variant, houses, type, type_string, 3, i, 2)
         if houses_dwn == "invalid move":
             fieldvalue_dwn = 0
         else:
-            fieldvalue_dwn = self.totalValue(houses_dwn, optimalisatietype)
+            fieldvalue_dwn = self.totalValue(houses_dwn, 0)
 
     # move 1m to left
         houses_lft = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, -2)
         if houses_lft == "invalid move":
             fieldvalue_lft = 0
         else:
-            fieldvalue_lft = self.totalValue(houses_lft, optimalisatietype)
+            fieldvalue_lft = self.totalValue(houses_lft, 0)
 
     # move 1m to right
         houses_rght = self.calculateProvisionalValue(variant, houses, type, type_string, 2, i, 2)
         if houses_rght == "invalid move":
             fieldvalue_rght = 0
         else:
-            fieldvalue_rght = self.totalValue(houses_rght, optimalisatietype)
+            fieldvalue_rght = self.totalValue(houses_rght, 0)
 
         # pick highest value
         newfieldvalue = max([fieldvalue_rght, fieldvalue_lft, fieldvalue_up, fieldvalue_dwn])
@@ -546,7 +545,8 @@ def randomAlgorithm(runs, filename):
     saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
     printHistogram(value20, value40, value60)
 
-def hillClimber(maxMoves, variant, visualize, optimalisatietype):
+
+def hillClimber(maxMoves, variant, visualize):
     mais = int(variant * 0.15)
     bung = int(variant * 0.25)
     egws = int(variant * 0.6)
@@ -569,15 +569,15 @@ def hillClimber(maxMoves, variant, visualize, optimalisatietype):
         oldTotalvalue = totalvalue
         # move houses and return houses area with changed values
         for i in range(mais):
-            result = moves.moveHouse(variant, houses, "maison{0}", i, totalvalue, 0, optimalisatietype)
+            result = moves.moveHouse(variant, houses, "maison{0}", i, totalvalue, 0)
             houses = result['houses']
             totalvalue = result['totalvalue']
         for i in range(bung):
-            result = moves.moveHouse(variant, houses, "bungalow{0}", i, totalvalue, 1, optimalisatietype)
+            result = moves.moveHouse(variant, houses, "bungalow{0}", i, totalvalue, 1)
             houses = result['houses']
             totalvalue = result['totalvalue']
         for i in range(egws):
-            result = moves.moveHouse(variant, houses, "singlefamily{0}", i, totalvalue, 2, optimalisatietype)
+            result = moves.moveHouse(variant, houses, "singlefamily{0}", i, totalvalue, 2)
             houses = result['houses']
             totalvalue = result['totalvalue']
 
@@ -613,7 +613,8 @@ def hillClimber(maxMoves, variant, visualize, optimalisatietype):
 
     return {'totalvalue': totalvalue, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': waterarea, 'houses': houses}
 
-def repeatHillClimber(runs, filename, optimalisatietype):
+
+def repeatHillClimber(runs, filename):
     value60 = []
     value40 = []
     value20 = []
@@ -624,21 +625,21 @@ def repeatHillClimber(runs, filename, optimalisatietype):
     for i in range(runs):
         print i
         print "60 variant"
-        result = hillClimber(200, 60, 'no', optimalisatietype)
+        result = hillClimber(200, 60, 'no')
         value60.append(result['totalvalue'])
         if result['totalvalue'] > highestValue60:
             highestValue60 = result['totalvalue']
             highestHouses60 = result['houses']
         createArrays(60, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "40 variant"
-        result = hillClimber(200, 40, 'no', optimalisatietype)
+        result = hillClimber(200, 40, 'no')
         value40.append(result['totalvalue'])
         if result['totalvalue'] > highestValue40:
             highestValue40 = result['totalvalue']
             highestHouses40 = result['houses']
         createArrays(40, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
         print "20 variant"
-        result = hillClimber(200, 20, 'no', optimalisatietype)
+        result = hillClimber(200, 20, 'no')
         value20.append(result['totalvalue'])
         if result['totalvalue'] > highestValue20:
             highestValue20 = result['totalvalue']
@@ -677,7 +678,7 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
         iteration = 1
         while iteration <= maxIterations:
             pick = moves.pickHouseSA(mais, bung, egws)
-            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'], optimalisatietype)
+            result = moves.moveHouseSA(variant, houses, pick['type_string'], pick['i'], totalvalue, pick['housetype'])
             newHouses = result['houses']
             newTotalValue = result['totalvalue']
             newCost = newTotalValue/100000.0
@@ -691,7 +692,11 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
                 if totalvalue > highestValue:
                     highestValue = totalvalue
             iteration += 1
+<<<<<<< HEAD
         print T
+=======
+        #print T
+>>>>>>> a3495616ac76186674511cc21df363d8e4b81a4c
         T = T*alpha
 
     vrijstand = moves.totalValue(houses, 1)
@@ -734,8 +739,12 @@ def repeatSimulatedAnnealing(runs, filename):
             highestValue20 = result['totalvalue']
             highestHouses20 = result['houses']
         createArrays(20, result['totalvalue'], result['vrijstand'], result['waterPieces'], result['waterarea'])
+        createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, (i+1) * 3, filename)
 
+<<<<<<< HEAD
     createFile(variantArray, totalvalueArray , vrijstandArray, waterPiecesArray, waterareaArray, runs * 3, filename)
+=======
+>>>>>>> a3495616ac76186674511cc21df363d8e4b81a4c
     saveHighest(highestHouses20, highestHouses40, highestHouses60, highestValue20, highestValue40, highestValue60, filename)
 
     plt.hist(value20)
@@ -794,7 +803,7 @@ def runProgram():
         print "\nDo you want to see a visualization?"
         visualize = raw_input("Type yes for visualization, else no visualization: ")
         print "\nHILLCLIMBER"
-        hillClimber(moves, variant, visualize, optimalisatietype)
+        hillClimber(moves, variant, visualize)
 
     elif algorithm == 3:
         print "\nHow many times do you want to execute the algorithm?"
