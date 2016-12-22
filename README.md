@@ -19,4 +19,4 @@ Jasper Scholten - 11157887
 
 **Week 7** - Gedurende week 7 is er met name verder gewerkt aan het optimaliseren van het hill-climber algoritme. Hierin was veel sprake van debugging. Daarnaast is verder gegaan met het berekenen van de toestandsruimte. Hierin waren namelijk een paar problemen waar tegenaan gelopen werd, maar hier zijn inmiddels oplossingen voor gevonden.
 
-**Week 8** -
+**Week 8** - De laatste week van het project is aangebroken en de laatste stappen worden gezet. Het random algoritme en de hill-climber waren nog gelukkig nog snel gelukt. Toen werd het tijd voor het laatste algoritme, de Simulated Annealing. Deze is inmiddels ook af en nu zijn het nog de laatste dingen die geperfectioneerd moeten worden. Bijvoorbeeld het opschonen van de code, het verslag, de presentatie, de README file en het logboek. Toch zien wij een rooskleurig einde tegemoet.
