@@ -1,3 +1,8 @@
+# course: Heuristieken
+# date: 22/12/16
+# names: Nadav Baruch, Jelle Mul en Jasper Scholten
+# description: The purpose of this program to optimize houses on a determined field, with two goals. One is to obtain the highest value and the other is to reach the most 'vrijstand'.
+
 import numpy
 import random
 import math
@@ -84,14 +89,14 @@ class ConstructionSite(object):
         positions = ['value', 'vrijstand', x_pos, y_pos, x_pos + leng, y_pos, x_pos, y_pos + wid, x_pos + leng, y_pos + wid]
         return positions
 
-    # zorg ervoor dat: a < b, c < d
+    # make sure: a < b, c < d
     def betweenCorners(self, a, b, c, d):
         if (a >= c and a <= d) or (b >= c and b <= d) or (c >= a and c <= b) or (d >= a and d <= b):
             return True
         else:
             return False
 
-    # huis 1: ax, ay - huis 2: bx, by
+    # house 1: ax, ay - house 2: bx, by
     def pythagoras(self, ax, ay, bx, by):
         leng = abs(ax - bx)
         wid = abs(ay - by)
@@ -100,38 +105,31 @@ class ConstructionSite(object):
 
     def calculateVrijstand(self, houses):
 
-        # houses bestaat uit twee arrays, 1 voor het huis dat bekeken wordt, 1 voor een willekeurig ander huis
+        # houses contains two arrays, 1 for the house that is being watched, 1 for a random other house
 
-        # boven
-        # huis 1 y_lu >= huis 2 y_ld
+        # up
+        # house 1 y_lu >= house 2 y_ld
         if houses[0][3] >= houses[1][7]:
-        # huis 2 x_lu en/of x_ru tussen huis 1 x_lu en x_ru
+        # house 2 x_lu and/or x_ru between house 1 x_lu and x_ru
             if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
                 distance = houses[0][3] - houses[1][7]
-                #print "huis boven tussen:", distance
             else:
                 # 1_lu, 2_rd
                 distance = min(self.pythagoras(houses[0][2], houses[0][3], houses[1][8], houses[1][9]), self.pythagoras(houses[0][4], houses[0][5], houses[1][6], houses[1][7]))
-                #print "huis boven hoeken:", distance
-        # onder
-        # huis 1 y_ld <= huis 2 y_lu
+        # down
+        # house 1 y_ld <= house 2 y_lu
         elif houses[0][7] <= houses[1][3]:
             if self.betweenCorners(houses[0][2], houses[0][4], houses[1][2], houses[1][4]):
                 distance = houses[1][3] - houses[0][7]
-                #print "huis onder tussen:", distance
             else:
                 distance = min(self.pythagoras(houses[0][6], houses[0][7], houses[1][4], houses[1][5]), self.pythagoras(houses[0][8], houses[0][9], houses[1][2], houses[1][3]))
-                #print "huis onder hoeken:", distance
         else:
             # left
             if houses[0][2] >= houses[1][4]:
                 distance = houses[0][2] - houses[1][4]
-                #print "huis links", distance
             # right
             else:
                 distance = houses[1][2] - houses[0][4]
-                #print "huis rechts", distance
-
         return distance
 
     def getVrijstand(self, currentHouse, houses, type):
@@ -148,18 +146,18 @@ class ConstructionSite(object):
                 else:
                     twoHouses = currentHouse, houses[housetype]["maison{0}".format(number)]
 
-                #gedeeld door 2 vanwege blokken van 0.5 meter
-                #vrijstand nauwkeuriger berekenen om preciezere value te krijgen
+                #divided by 2 because of blocks of 0.5 meter
+                #calculating more accurately to get a more precise 'vrijstand'
                 currentVrijstand = self.calculateVrijstand(twoHouses)/2.0
 
-                # check if vrijstand is kleiner
+                # check if 'vrijstand' is smaller
                 if 0 <= currentVrijstand < vrijstand:
                     vrijstand = currentVrijstand
 
-        # bereken of afstand tot muur kleiner is.
+        # calculate if the distance to the wall is smaller.
         distanceToWall = min((self.width - currentHouse[8]), (self.height - currentHouse[9]), currentHouse[2], currentHouse[3])
         if distanceToWall/2.0 < vrijstand:
-            #gedeeld door 2 vanwege blokken van 0.5 meter
+            # divided by 2 because of blocks of 0.5 meter
             vrijstand = distanceToWall/2.0
 
         for i in range(len(houses[3])):
@@ -507,9 +505,6 @@ def initializeSimulation(mais, bung, egws, width, height):
     totalvalue = area.totalValue(houses, 0)
     vrijstand = area.totalValue(houses, 1)
 
-    #plt.imshow(area.area)
-    #plt.show()
-
     return {'totalvalue':totalvalue, 'houses':houses, 'area':area.area, 'vrijstand': vrijstand, 'waterPieces': waterPieces, 'waterarea': result['waterarea'] }
 
 def randomAlgorithm(runs, filename, visualize):
@@ -605,7 +600,6 @@ def hillClimber(maxMoves, variant, visualize, optim):
     if visualize == 'yes':
         visualizeArea(houses)
 
-        #print numberIterationsArray, totalvalueArray
         plt.plot(numberIterationsArray,totalvalueArray)
         plt.xlabel('Number of Iterations', fontsize=15)
         plt.ylabel('Total field value', fontsize=15)
@@ -705,7 +699,6 @@ def simulatedAnnealing(variant, T, T_min, alpha, maxIterations, visualize):
                 if totalvalue > highestValue:
                     highestValue = totalvalue
             iteration += 1
-        #print T
         T = T*alpha
 
     vrijstand = moves.totalValue(houses, 1)
@@ -838,7 +831,6 @@ def runProgram():
         print "\nDo you want to see a visualization?"
         visualize = raw_input("Type yes for visualization, else no visualization: ")
         print "\nSIMULATED ANNEALING"
-        # variant, T, T_min, alpha, maxIterations, visualize
         simulatedAnnealing(20, 1.0, 0.0002, 0.99, 50, visualize)
 
     elif algorithm == 5:
