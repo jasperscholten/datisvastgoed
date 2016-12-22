@@ -1,7 +1,7 @@
 # course: Heuristieken
 # date: 22/12/16
-# names: Nadav Baruch, Jelle Mul en Jasper Scholten
-# description: The purpose of this program to optimize houses on a determined field, with two goals. One is to obtain the highest value and the other is to reach the most 'vrijstand'.
+# names: Nadav Baruch, Jelle Mul and Jasper Scholten
+# description: The purpose of this program to optimize houses on a determined field, with two goals. One is to obtain the highest value and the other is to reach the most 'vrijstand'. There are three algorithms: random algorithm, repeated hill-climber algorithm and a simulated annealing algorithm.
 
 import numpy
 import random

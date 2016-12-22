@@ -1,3 +1,8 @@
+# course: Heuristieken
+# date: 22/12/16
+# names: Nadav Baruch, Jelle Mul and Jasper Scholten
+# description: With this program it is possible to enter a dictionary of houses and to recreate that field.
+
 import numpy
 import random
 import math
