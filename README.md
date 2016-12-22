@@ -1,11 +1,16 @@
-# Readme van Amstelhaege case bij heuristieken
-## Groep Datis Vastgoed
+# Readme Amstelhaege case bij heuristieken
+## Groep Datis Vastgoed B.V.
 Nadav Baruch - 11427353</br>
 Jelle Mul - 11402148</br>
 Jasper Scholten - 11157887
 
+## Doel van de Amstelhaege case
+De gemeente Ouder-Amstel heeft Datis Vastgoed B.V. de planologisch uitdagende klus gegeven, een geheel nieuwe woonwijk te ontwikkelen op een locatie in de Duivendrechtse Polder ter grootte van 150 bij 160 meter. De wijk zal de naam ‘Amstelhaege’ gaan dragen en heeft als voornaamste doelgroep expats en hoogopgeleide werknemers actief op de Amsterdamse Zuidas.
+Het planologisch proces zal worden gebaseerd op een vernieuwend concept, waarin de indeling van de wijk bepaald wordt met behulp van een computeralgoritme. Dit algoritme zal de indeling van de wijk proberen te optimaliseren op basis van een aantal wensen van de gemeente. Zo moeten er uiteindelijk drie varianten onderzocht worden, die respectievelijk de opties voor twintig, veertig en zestig huizen uitwerken.
+
 ## Het programma
 Met behulp van dit programma is het mogelijk om huizen op een bepaalde oppervlakte te optimaliseren op twee doelen, namelijk op zo een groot mogelijke vrijstand en een zo hoog mogelijke prijs. Hoe dit bepaald wordt is terug te vinden in het verslag. Door middel van command-line arguments is het programma te runnen. Allereerst wordt gevraagd welke variant er gerund er dient te worden. Voor elke variant zijn er verschillende inputs van de gebruiker nodig, zoals de naam voor het .csv bestand, het aantal keer dat het programma moet runnen, of er een visualisatie wordt laten zien aan het eind en voorwaarden voor bepaalde varianten. 
+
 ## Gemaakt met
 Atom (Python)
 
