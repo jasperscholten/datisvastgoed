@@ -597,18 +597,14 @@ def hillClimber(maxMoves, variant, visualize, optim):
 
     print "FINAL", totalvalue
 
-    plt.plot(numberIterationsArray,totalvalueArray)
-    plt.xlabel('Number of iterations')
-    plt.ylabel('Total value')
-    #plt.show()
-
     if visualize == 'yes':
         visualizeArea(houses)
 
         #print numberIterationsArray, totalvalueArray
         plt.plot(numberIterationsArray,totalvalueArray)
-        plt.xlabel('number Iterations')
-        plt.ylabel('total value')
+        plt.xlabel('Number of Iterations', fontsize=15)
+        plt.ylabel('Total field value', fontsize=15)
+        plt.suptitle('Field value - Iterations', fontsize=15)
         plt.show()
 
     finalArea = ConstructionSite(300, 320)
